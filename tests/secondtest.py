@@ -12,41 +12,11 @@ This code is tested and works
 """
 # Import Python System Libraries
 import time
-# Import Blinka Libraries
 import busio
 from digitalio import DigitalInOut, Direction, Pull
 import board
-# Import the SSD1306 module.
-import adafruit_ssd1306
 # Import RFM9x
 import adafruit_rfm9x
-
-# Button A
-btnA = DigitalInOut(board.D13)
-btnA.direction = Direction.INPUT
-btnA.pull = Pull.UP
-
-# Button B
-btnB = DigitalInOut(board.D19)
-btnB.direction = Direction.INPUT
-btnB.pull = Pull.UP
-
-# Button C
-btnC = DigitalInOut(board.D26)
-btnC.direction = Direction.INPUT
-btnC.pull = Pull.UP
-
-# Create the I2C interface.
-i2c = busio.I2C(board.SCL, board.SDA)
-
-# 128x32 OLED Display
-reset_pin = DigitalInOut(board.D4)
-display = adafruit_ssd1306.SSD1306_I2C(128, 32, i2c, reset=reset_pin)
-# Clear the display.
-display.fill(0)
-display.show()
-width = display.width
-height = display.height
 
 # Configure LoRa Radio
 CS = DigitalInOut(board.CE1)

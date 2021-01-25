@@ -2,6 +2,7 @@
 # This is a modified version of firsttest.py that eliminates
 # the need for buttons and a display
 # Made by evan on 01/25/2021
+# this comment made on Pi0
 """
 Example for using the RFM9x Radio with Raspberry Pi.
 

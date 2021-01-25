@@ -83,6 +83,6 @@ while True:
             print("Waiting for packet")
         else:
             prev_packet = packet
-            packet_txt = str(prev_packet, "utf-8")
+            packet_text = str(prev_packet, "utf-8")
             print("RX: " + packet_text)
             time.sleep(1)

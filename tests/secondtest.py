@@ -98,8 +98,6 @@ while True:
         display.fill(0)
         button_c_data = bytes("Button C!\r\n", "utf-8")
         rfm9x.send(button_c_data)
-        display.text('Sent Button C!', 25, 15, 1)
         print("Sent Button C!")  # print to console
 
-    display.show()
-    time.sleep(0.1)
+	time.sleep(0.1)

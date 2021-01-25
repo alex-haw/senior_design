@@ -78,7 +78,7 @@ while True:
         time.sleep(5)
 
     while mode == "RX":
-        packet = rfm9x.recieve()
+        packet = rfm9x.reiecve()
         if packet is None:
             print("Waiting for packet")
         else:

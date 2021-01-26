@@ -71,6 +71,7 @@ while True:
         print(packet_text)
         display.text('RX: ', 0, 0, 1)
         display.text(packet_text, 25, 0, 1)
+        display.text("RSSI= " + str(rfm9x.last_rssi), 0, 10, 1) # print rssi
         time.sleep(1)
 
     if not btnA.value:

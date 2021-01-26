@@ -53,8 +53,7 @@ i = 0
 print("Please Choose a Mode: \n RX=1\n TX=2\n")
 choice = input("Enter Number:")
 
-while choice == 1:
-    print("test")
+while int(choice) == 1:
     packet = None
     # draw a box to clear the image
     display.fill(0)
@@ -78,13 +77,17 @@ while choice == 1:
         w.write(packet_text)
         time.sleep(1)
 
-while choice == 2:
+while int(choice) == 2:
     print("Select a file to send")
+    i = 1
     for x in files:
-        print(x)
+        print(str(i) +". " + x)
+        i+=1
     # Send Chosen File
+    option = input("Enter a Number: ")
     display.fill(0)
-
+    
+    currentfile = files[int(option) - 1]
     # take data from file instead of regular text
     f = open(currentfile, 'r')
     button_a_data = bytes(f.read(), "utf-8")

@@ -1,4 +1,4 @@
-# Tests
+# Long distance file transfer with lora packet radio
 This is a senior design project with the goal of sending files large distances using LoRa. 
 The hardware consists of a Raspberry Pi 3 B+ and an Adafruit RFM95 Lora Radio. 
 The project is currently in the testing stage. 

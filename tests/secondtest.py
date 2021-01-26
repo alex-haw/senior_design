@@ -3,6 +3,7 @@
 # the need for buttons and a display
 # Made by evan on 01/25/2021
 # this comment made on Pi0
+# this comment made on pi2
 """
 Example for using the RFM9x Radio with Raspberry Pi.
 

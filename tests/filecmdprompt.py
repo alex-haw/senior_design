@@ -54,7 +54,7 @@ print("Please Choose a Mode: \n RX=1\n TX=2\n")
 choice = input("Enter Number:")
 
 while choice == 1:
-
+    print("test")
     packet = None
     # draw a box to clear the image
     display.fill(0)

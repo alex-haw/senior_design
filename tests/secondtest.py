@@ -45,7 +45,7 @@ while True:
 
     while mode == "TX":
         print("Sending 'Hello' ")
-        tx_data = bytes("Hello \r\n", "utf-8")
+        tx_data = bytes("Hello", "utf-8")
         rfm9x.send(tx_data)
         print("Hello sent, pausing for 5 secconds...")
         time.sleep(5)
@@ -57,6 +57,5 @@ while True:
         else:
             prev_packet = packet
             packet_text = str(prev_packet, "utf-8")
-            print("RX: " + packet_text)
-#            print("RSSI = " + str(last_rssi) # work in progress
+            print("Received: " + packet_text + " with RSSI = " + str(rfm9x.last_rssi))
             time.sleep(1)

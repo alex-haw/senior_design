@@ -58,4 +58,5 @@ while True:
             prev_packet = packet
             packet_text = str(prev_packet, "utf-8")
             print("RX: " + packet_text)
+#            print("RSSI = " + str(last_rssi) # work in progress
             time.sleep(1)

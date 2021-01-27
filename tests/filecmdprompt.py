@@ -46,7 +46,7 @@ spi = busio.SPI(board.SCK, MOSI=board.MOSI, MISO=board.MISO)
 rfm9x = adafruit_rfm9x.RFM9x(spi, CS, RESET, 915.0)
 rfm9x.tx_power = 23
 prev_packet = None
-files = os.listdir('transmit_directory/')
+files = os.listdir('tx_dir')
 currentfile = files[0]
 i = 0
 

@@ -39,7 +39,7 @@ while int(choice) == 1:
         # Display the packet has been received and rssi
         prev_packet = packet
         packet_text = str(prev_packet, "utf-8")
-        print("Packet Received")
+        print("Packet Received, Writing to 'receivedfile' now")
         w = open('receivedfile', 'w')
         w.write(packet_text)
         time.sleep(1)

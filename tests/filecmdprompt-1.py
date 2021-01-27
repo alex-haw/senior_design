@@ -47,7 +47,7 @@ spi = busio.SPI(board.SCK, MOSI=board.MOSI, MISO=board.MISO)
 rfm9x = adafruit_rfm9x.RFM9x(spi, CS, RESET, 915.0)
 rfm9x.tx_power = 23
 prev_packet = None
-files = os.listdir('transmit_directory/')
+files = os.listdir('tx_dir')
 currentfile = files[0]
 i = 0
 j = 0
@@ -74,7 +74,7 @@ while int(choice) == 1:
         display.text('RX: ', 0, 0, 1)
         display.text('Packet received', 25, 0, 1)
         print("Packet Received")
-        os.chdir('receive_directory')
+        os.chdir('rx_dir')
 
         w = open('file' + str(j), 'w')
         w.write(packet_text)
@@ -93,7 +93,7 @@ while int(choice) == 2:
     
     currentfile = files[int(option) - 1]
     # take data from file instead of regular text
-    os.chdir('transmit_directory')
+    os.chdir('tx_dir')
     #f = open('text2.txt','r')
     f = open(currentfile, 'r')
     button_a_data = bytes(f.read(), "utf-8")

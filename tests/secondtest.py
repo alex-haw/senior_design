@@ -35,7 +35,8 @@ while True:
     packet = None
     print("******************")
     print("** Rasppi LoRa  **")  # Print to console
-    print("******************")
+    bw = rfm9x.signal_bandwidth
+    print("* with signal bandwidth of: " +str(bw) +" Hz *")
 
     print("Would you like to this program to TX or RX (TX/RX)")
     mode = input()

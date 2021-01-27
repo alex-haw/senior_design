@@ -21,7 +21,7 @@ spi = busio.SPI(board.SCK, MOSI=board.MOSI, MISO=board.MISO)
 rfm9x = adafruit_rfm9x.RFM9x(spi, CS, RESET, 915.0)
 rfm9x.tx_power = 23
 prev_packet = None
-files = os.listdir('transmit_directory/')
+files = os.listdir('tx_dir')
 currentfile = files[0]
 i = 0
 
@@ -40,29 +40,30 @@ while int(choice) == 1:
         prev_packet = packet
         packet_text = str(prev_packet, "utf-8")
         print("Packet Received, Writing to 'receivedfile' now")
-        w = open('receivedfile', 'a')
+        w = open("rx_dir/receivedfile", "a")
         w.write(packet_text)
         time.sleep(1)
 
 while int(choice) == 2:
     
     # List Files in Transmit Directory
-    print("** The current files in transmit_directory/ are:")
-    for x in range(len(files)):
+    print("** The current files in tx_dir/ are:")
+    for x in range(len(files)): # show all files
         print(files[x])
 
     # Ask User to Choose a File
-    print("What file would you like to open?")
-    currentfile = input()
+    # print("What file would you like to open? (include .txt)")
+    currentfile = input("What file would you like to open? (include .txt)")
 
     # Show Chosen File
     print("The contents of " + currentfile +" is:\n")
-    f = open("transmit_directory/" + currentfile, "r")
+    f = open("tx_dir/" + currentfile, "r")
     for line in f:
         print(line)
 
     # Send Chosen File
-    f = open("transmit_directory/" + currentfile, 'r')
+    print(currentfile + " is now being sent through LoRa\n")
+    f = open("tx_dir/" + currentfile, 'r')
     tx_data = bytes(f.read(), "utf-8")
     rfm9x.send(tx_data)
 

@@ -40,7 +40,7 @@ while int(choice) == 1:
         prev_packet = packet
         packet_text = str(prev_packet, "utf-8")
         print("Packet Received, Writing to 'receivedfile' now")
-        w = open('receivedfile', 'w')
+        w = open('receivedfile', 'a')
         w.write(packet_text)
         time.sleep(1)
 

@@ -11,6 +11,7 @@ while True:
 		print(files[x])
 	print("What file would you like to open?")
 	currentfile = input()
+	print("The contents of " + currentfile +" is:\n")
 	f = open("transmit_directory/" + currentfile, "r")
 	for line in f:
 		print(line)

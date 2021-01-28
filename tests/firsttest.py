@@ -17,6 +17,9 @@ import adafruit_ssd1306
 # Import RFM9x
 import adafruit_rfm9x
 
+# set up temp monitor
+from gpiozero import CPUTemperature
+
 # Button A
 btnA = DigitalInOut(board.D13)
 btnA.direction = Direction.INPUT
@@ -72,6 +75,9 @@ while True:
         display.text('RX: ', 0, 0, 1)
         display.text(packet_text, 25, 0, 1)
         display.text("RSSI= " + str(rfm9x.last_rssi), 0, 10, 1) # print rssi
+        cpu = CPUTemperature() # get cpu temperature
+        # temp = cpu.temperature
+        display.text("Temp= " + str(cpu.temperature) +" C", 0, 20, 1) # print cpu temprature 
         time.sleep(1)
 
     if not btnA.value:

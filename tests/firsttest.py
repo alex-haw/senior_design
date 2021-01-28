@@ -78,7 +78,7 @@ while True:
         cpu = CPUTemperature() # get cpu temperature
         # temp = cpu.temperature
         display.text("Temp= " + str(cpu.temperature) +" C", 0, 20, 1) # print cpu temprature 
-        time.sleep(3)
+        time.sleep(1)
 
     if not btnA.value:
         # Send Button A

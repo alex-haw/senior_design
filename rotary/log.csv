@@ -1,1 +1,2 @@
-# log for RSSI readings: date, time, distance, rssi
+#message,  #date,     #time,   #dist,	#temp
+Trial on: ,2021-02-02,11:27:10,13752.67,53.692

@@ -35,7 +35,8 @@ while True:
     packet = None
     print("******************")
     print("** Rasppi LoRa  **")  # Print to console
-    print("******************")
+    bw = rfm9x.signal_bandwidth
+    print("* with signal bandwidth of: " +str(bw) +" Hz *")
 
     print("Would you like to this program to TX or RX (TX/RX)")
     mode = input()
@@ -45,7 +46,7 @@ while True:
 
     while mode == "TX":
         print("Sending 'Hello' ")
-        tx_data = bytes("Hello \r\n", "utf-8")
+        tx_data = bytes("Hello", "utf-8")
         rfm9x.send(tx_data)
         print("Hello sent, pausing for 5 secconds...")
         time.sleep(5)
@@ -57,5 +58,5 @@ while True:
         else:
             prev_packet = packet
             packet_text = str(prev_packet, "utf-8")
-            print("RX: " + packet_text)
+            print("Received: " + packet_text + " with RSSI = " + str(rfm9x.last_rssi))
             time.sleep(1)

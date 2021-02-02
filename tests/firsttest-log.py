@@ -30,7 +30,7 @@ arduino.flush()
 #enable temp readings
 from gpiozero import CPUTemperature
 
-log = open('log.csv', 'a')
+#log = open('log.csv', 'a')
 
 
 # Button A
@@ -68,6 +68,24 @@ rfm9x = adafruit_rfm9x.RFM9x(spi, CS, RESET, 915.0)
 rfm9x.tx_power = 23
 prev_packet = None
 
+
+# ****************************** Log part 
+from time import sleep, strftime, time
+import serial
+# import time #already imported
+arduino = serial.Serial('/dev/ttyACM0', 9600, timeout=0.1)
+arduino.flush()  # Clear input and output buffer
+
+#promt user for log file name
+logFile = "log.csv" #default
+logFile = input("File to save data to: ")
+log = open(logFile, 'w') # w = overwire file, a = append
+log.write("#message,#date,#time,#distance,#temp\n") # column label header
+print("Logging data to '" + logFile + "'..." )
+count =1
+
+
+
 while True:
     packet = None
     # draw a box to clear the image
@@ -79,7 +97,7 @@ while True:
     if packet is None:
         display.show()
         display.text('- Waiting for PKT -', 15, 20, 1)
-        data = arduino.readline().decode('ascii').rstrip()
+        #data = arduino.readline().decode('ascii').rstrip()
     else:
         # Display the packet text and rssi
         display.fill(0)
@@ -90,9 +108,17 @@ while True:
         display.text(packet_text, 25, 0, 1)
         display.text("RSSI= " + str(rfm9x.last_rssi), 0, 10, 1) # print rssi
         cpu = CPUTemperature() # get cpu temperature
+        temp = str(cpu.temperature)
         #display cpu temp
-        display.text("Temp= " + str(cpu.temperature) +" C", 0, 20, 1) # print cpu temprature 
+        display.text("Temp= " + temp) +" C", 0, 20, 1) # print cpu temprature 
         
+        # write to log file
+        try:
+            data = arduino.readline().decode('utf-8').strip() # decode serial bytes and remove trailing characters (\n)
+        except UnicodeDecodeError:
+            data = "invalid characters revieved"
+        
+
         data = arduino.readline().decode('ascii').rstrip()
         if data:
                 print(data)

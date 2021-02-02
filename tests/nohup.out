@@ -1,0 +1,485 @@
+Traceback (most recent call last):
+  File "firsttest.py", line 54, in <module>
+    rfm9x = adafruit_rfm9x.RFM9x(spi, CS, RESET, 915.0)
+  File "/usr/local/lib/python3.7/dist-packages/adafruit_rfm9x.py", line 253, in __init__
+    "Failed to find rfm9x with expected version -- check wiring"
+RuntimeError: Failed to find rfm9x with expected version -- check wiring
+Traceback (most recent call last):
+  File "firsttest.py", line 65, in <module>
+    packet = rfm9x.receive()
+  File "/usr/local/lib/python3.7/dist-packages/adafruit_rfm9x.py", line 771, in receive
+    while not timed_out and not self.rx_done():
+  File "/usr/local/lib/python3.7/dist-packages/adafruit_rfm9x.py", line 623, in rx_done
+    return (self._read_u8(_RH_RF95_REG_12_IRQ_FLAGS) & 0x40) >> 6
+  File "/usr/local/lib/python3.7/dist-packages/adafruit_rfm9x.py", line 355, in _read_u8
+    self._read_into(address, self._BUFFER, length=1)
+  File "/usr/local/lib/python3.7/dist-packages/adafruit_rfm9x.py", line 351, in _read_into
+    device.readinto(buf, end=length)
+  File "/usr/local/lib/python3.7/dist-packages/adafruit_bus_device/spi_device.py", line 84, in __exit__
+    self.chip_select.value = True
+  File "/usr/local/lib/python3.7/dist-packages/digitalio.py", line 162, in value
+    self._pin.value(1 if val else 0)
+  File "/usr/local/lib/python3.7/dist-packages/adafruit_blinka/microcontroller/bcm283x/pin.py", line 53, in value
+    def value(self, val=None):
+KeyboardInterrupt
+Traceback (most recent call last):
+  File "firsttest.py", line 65, in <module>
+    packet = rfm9x.receive()
+  File "/usr/local/lib/python3.7/dist-packages/adafruit_rfm9x.py", line 771, in receive
+    while not timed_out and not self.rx_done():
+  File "/usr/local/lib/python3.7/dist-packages/adafruit_rfm9x.py", line 623, in rx_done
+    return (self._read_u8(_RH_RF95_REG_12_IRQ_FLAGS) & 0x40) >> 6
+  File "/usr/local/lib/python3.7/dist-packages/adafruit_rfm9x.py", line 355, in _read_u8
+    self._read_into(address, self._BUFFER, length=1)
+  File "/usr/local/lib/python3.7/dist-packages/adafruit_rfm9x.py", line 347, in _read_into
+    with self._device as device:
+  File "/usr/local/lib/python3.7/dist-packages/adafruit_bus_device/spi_device.py", line 76, in __enter__
+    baudrate=self.baudrate, polarity=self.polarity, phase=self.phase
+  File "/usr/local/lib/python3.7/dist-packages/busio.py", line 198, in configure
+    if detector.board.any_raspberry_pi or detector.board.any_raspberry_pi_40_pin:
+  File "/usr/local/lib/python3.7/dist-packages/adafruit_platformdetect/board.py", line 418, in any_raspberry_pi
+    return self._pi_rev_code() is not None
+  File "/usr/local/lib/python3.7/dist-packages/adafruit_platformdetect/board.py", line 194, in _pi_rev_code
+    rev = self.detector.get_cpuinfo_field("Revision")
+  File "/usr/local/lib/python3.7/dist-packages/adafruit_platformdetect/__init__.py", line 53, in get_cpuinfo_field
+    match = re.search(pattern, line, flags=re.IGNORECASE)
+  File "/usr/lib/python3.7/re.py", line 183, in search
+    return _compile(pattern, flags).search(string)
+  File "/usr/lib/python3.7/re.py", line 275, in _compile
+    try:
+KeyboardInterrupt
+Traceback (most recent call last):
+  File "firsttest.py", line 54, in <module>
+    rfm9x = adafruit_rfm9x.RFM9x(spi, CS, RESET, 915.0)
+  File "/usr/local/lib/python3.7/dist-packages/adafruit_rfm9x.py", line 253, in __init__
+    "Failed to find rfm9x with expected version -- check wiring"
+RuntimeError: Failed to find rfm9x with expected version -- check wiring
+Traceback (most recent call last):
+  File "/usr/lib/python3/dist-packages/serial/serialposix.py", line 265, in open
+    self.fd = os.open(self.portstr, os.O_RDWR | os.O_NOCTTY | os.O_NONBLOCK)
+FileNotFoundError: [Errno 2] No such file or directory: '/dev/ttyACM0'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "firsttest-log.py", line 27, in <module>
+    arduino = serial.Serial('/dev/ttyACM0', 9600, timeout = 0.1)
+  File "/usr/lib/python3/dist-packages/serial/serialutil.py", line 240, in __init__
+    self.open()
+  File "/usr/lib/python3/dist-packages/serial/serialposix.py", line 268, in open
+    raise SerialException(msg.errno, "could not open port {}: {}".format(self._port, msg))
+serial.serialutil.SerialException: [Errno 2] could not open port /dev/ttyACM0: [Errno 2] No such file or directory: '/dev/ttyACM0'
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Button C!
+
+Traceback (most recent call last):
+  File "firsttest.py", line 73, in <module>
+    packet_text = str(prev_packet, "utf-8")
+UnicodeDecodeError: 'utf-8' codec can't decode byte 0xff in position 0: invalid start byte

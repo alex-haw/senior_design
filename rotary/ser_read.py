@@ -28,5 +28,6 @@ while True:
     message = str("Trial on: ")
     dateYMD = strftime("%Y-%m-%d")
     timeHMS = strftime("%H:%M:%S")
+    print(data)
     log.write("{0},{1},{2},{3},{4}\n".format(message,dateYMD,timeHMS,str(data),temp))
     time.sleep(0.001)

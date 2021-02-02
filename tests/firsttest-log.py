@@ -93,7 +93,7 @@ while True:
         #display cpu temp
         display.text("Temp= " + str(cpu.temperature) +" C", 0, 20, 1) # print cpu temprature 
         
-        #data = arduino.readline().decode('ascii').rstrip()
+        data = arduino.readline().decode('ascii').rstrip()
         if data:
                 print(data)
                 #log data

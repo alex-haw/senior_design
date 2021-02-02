@@ -79,6 +79,7 @@ while True:
     if packet is None:
         display.show()
         display.text('- Waiting for PKT -', 15, 20, 1)
+        data = arduino.readline().decode('ascii').rstrip()
     else:
         # Display the packet text and rssi
         display.fill(0)
@@ -92,7 +93,7 @@ while True:
         #display cpu temp
         display.text("Temp= " + str(cpu.temperature) +" C", 0, 20, 1) # print cpu temprature 
         
-        data = arduino.readline().decode('ascii').rstrip()
+        #data = arduino.readline().decode('ascii').rstrip()
         if data:
                 print(data)
                 #log data
@@ -102,7 +103,7 @@ while True:
                 dateYMD = strftime("%Y-%m-%d")
                 timeHMS = strftime("%H:%M:%S")
                 print("Writing to log.csv")
-                log.write("{0},{1},{2},{3},{4}\n".format(message,dateYMD,timeHMS, str(data), temp))
+                log.write("{0},{1},{2},{3},{4},{5}\n".format(message,dateYMD,timeHMS, str(data), temp,str(rfm9x.last_rssi)))
         time.sleep(1)
 
     if not btnA.value:

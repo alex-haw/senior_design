@@ -15,8 +15,10 @@ from gpiozero import CPUTemperature
 #promt user for log file name
 logFile = "log.csv" #default
 logFile = input("File to save data to: ")
-log = open(logFile, 'a')
+log = open(logFile, 'w') # w = overwire file, a = append
+log.write("#message,#date,#time,#distance,#temp\n") # column label header
 print("Logging data to '" + logFile + "'..." )
+count =1
 
 while True:
     try:
@@ -25,9 +27,12 @@ while True:
         data = "invalid characters revieved"
     cpu = CPUTemperature()
     temp = str(cpu.temperature)
-    message = str("Trial on: ")
+    message = str("Trial:")
     dateYMD = strftime("%Y-%m-%d")
     timeHMS = strftime("%H:%M:%S")
-    print(data)
-    log.write("{0},{1},{2},{3},{4}\n".format(message,dateYMD,timeHMS,str(data),temp))
+    if count >= 150: # only write every second
+        print(data)
+        log.write("{0},{1},{2},{3},{4}\n".format(message,dateYMD,timeHMS,str(data),temp))
+        count = 1
+    count = count + 1
     time.sleep(0.001)

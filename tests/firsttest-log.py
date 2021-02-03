@@ -68,7 +68,7 @@ distance = 0 #defalt if not reading distance from serial
 logFile = "log.csv" #default
 #logFile = input("File to save data to: ")
 log = open(logFile, 'w') # w = overwrite file, a = append
-log.write("#message,#date,#time,#distance,#temp,#RSSI\n") # column label header if overwriting
+log.write("#message,#date,#time,#distance (m),#temp (C),#RSSI (dBm)\n") # column label header if overwriting
 print("Logging data to " + logFile + "..." ) # tell user what program is doing
 # count = 1 # variable for delay pruposes
 

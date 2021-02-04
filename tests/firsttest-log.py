@@ -60,8 +60,8 @@ prev_packet = None
 #serial arduino
 from time import sleep, strftime, time
 import serial, time
-#arduino = serial.Serial('/dev/ttyACM0', 9600, timeout = 0.1)
-#arduino.flush()
+arduino = serial.Serial('/dev/ttyACM0', 9600, timeout = 0.1)
+arduino.flush()
 distance = 0 #defalt if not reading distance from serial
 
 #promt user for log file name, overwrite for now so that we don't have to clear the log
@@ -83,13 +83,22 @@ while True:
     if packet is None:
         display.show()
         display.text('- Waiting for PKT -', 15, 20, 1)
-        #data = arduino.readline().decode('ascii').rstrip() # might turn
+        # Read serial from arduino
+        #arduino.flush()
+        try:
+            distance = arduino.readline().decode('ascii').strip() # decode serial bytes and remove trailing characters (\n)
+        except UnicodeDecodeError: # ignore if problems occur
+            distance = "invalid characters revieved"
+        #arduino.flush()
+        print("Distance = " + str(distance))
     else:
         try:
             display.text('- PKT Received -', 15, 20, 1)
             prev_packet = packet
             packet_text = str(prev_packet, "utf-8")
        
+            # Tell arduino we are ready to recieve
+            #arduino.write("1")
             # Read serial from arduino
             #try:
             #    distance = arduino.readline().decode('utf-8').strip() # decode serial bytes and remove trailing characters (\n)
@@ -119,6 +128,7 @@ while True:
             log.write("{0},{1},{2},{3},{4},{5}\n".format(message,dateYMD,timeHMS, str(distance),temp,str(rfm9x.last_rssi)))
             time.sleep(1)
             continue
+    #arduino.flush()
 
     if not btnA.value:
         # Send Button A

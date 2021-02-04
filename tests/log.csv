@@ -475,3 +475,14 @@ Trial on: ,2021-02-04,15:56:17,0,45.084,-119
 Trial on: ,2021-02-04,15:56:18,0,45.084,-122
 Trial on: ,2021-02-04,15:56:19,0,45.084,-122
 Trial on: ,2021-02-04,15:56:20,0,45.084,-126
+#message,#date,#time,#distance (m),#temp (C),#RSSI (dBm)
+#message,#date,#time,#distance (m),#temp (C),#RSSI (dBm)
+Trial on: ,2021-02-04,16:38:38,0,49.388,-66
+Trial on: ,2021-02-04,16:38:43,0,51.002,-65
+Trial on: ,2021-02-04,16:38:48,0,52.078,-65
+Trial on: ,2021-02-04,16:38:53,0,52.078,-64
+#message,#date,#time,#distance (m),#temp (C),#RSSI (dBm)
+#message,#date,#time,#distance (m),#temp (C),#RSSI (dBm)
+#message,#date,#time,#distance (m),#temp (C),#RSSI (dBm)
+#message,#date,#time,#distance (m),#temp (C),#RSSI (dBm)
+#message,#date,#time,#distance (m),#temp (C),#RSSI (dBm)

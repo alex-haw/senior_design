@@ -113,6 +113,10 @@ while True:
         except UnicodeDecodeError:
             print("Packet error")
             display.text('PKT Error', 15, 20, 1)
+            message = str("Packet Error: ")
+            dateYMD = strftime("%Y-%m-%d")
+            timeHMS = strftime("%H:%M:%S")
+            log.write("{0},{1},{2},{3},{4},{5}\n".format(message,dateYMD,timeHMS, str(distance),temp,str(rfm9x.last_rssi)))
             time.sleep(1)
             continue
 

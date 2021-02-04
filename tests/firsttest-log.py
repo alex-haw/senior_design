@@ -85,29 +85,33 @@ while True:
         display.text('- Waiting for PKT -', 15, 20, 1)
         #data = arduino.readline().decode('ascii').rstrip() # might turn
     else:
-        prev_packet = packet
-        packet_text = str(prev_packet, "utf-8")
+        try:
+            prev_packet = packet
+            packet_text = str(prev_packet, "utf-8")
        
-        # Read serial from arduino
-        #try:
-        #    distance = arduino.readline().decode('utf-8').strip() # decode serial bytes and remove trailing characters (\n)
-        #except UnicodeDecodeError: # ignore if problems occur
-        #    distance = "invalid characters revieved"
+            # Read serial from arduino
+            #try:
+            #    distance = arduino.readline().decode('utf-8').strip() # decode serial bytes and remove trailing characters (\n)
+            #except UnicodeDecodeError: # ignore if problems occur
+            #    distance = "invalid characters revieved"
         
-        #print(distance) # distance default is 0 of not reading from serial, uncomment for reading distance
-        print("Recieved: " + packet_text + " at distance of " + str(distance) + " m with RSSI= " +str(rfm9x.last_rssi))
+            #print(distance) # distance default is 0 of not reading from serial, uncomment for reading distance
+            print("Recieved: " + packet_text + " at distance of " + str(distance) + " m with RSSI= " +str(rfm9x.last_rssi))
         
-        # get log data
-        cpu = CPUTemperature()
-        temp = str(cpu.temperature)
-        message = str("Trial on: ")
-        dateYMD = strftime("%Y-%m-%d")
-        timeHMS = strftime("%H:%M:%S")
+            # get log data
+            cpu = CPUTemperature()
+            temp = str(cpu.temperature)
+            message = str("Trial on: ")
+            dateYMD = strftime("%Y-%m-%d")
+            timeHMS = strftime("%H:%M:%S")
         
-        # Write log data to log
-        print("Writing to log.csv")
-        log.write("{0},{1},{2},{3},{4},{5}\n".format(message,dateYMD,timeHMS, str(distance), temp,str(rfm9x.last_rssi)))
-        time.sleep(1)
+            # Write log data to log
+            print("Writing to log.csv")
+            log.write("{0},{1},{2},{3},{4},{5}\n".format(message,dateYMD,timeHMS, str(distance), temp,str(rfm9x.last_rssi)))
+            time.sleep(1)
+        except UnicodeDecodeError:
+            print("Packet error")
+            continue
 
     if not btnA.value:
         # Send Button A

@@ -86,6 +86,7 @@ while True:
         #data = arduino.readline().decode('ascii').rstrip() # might turn
     else:
         try:
+            display.text('- PKT Received -', 15, 20, 1)
             prev_packet = packet
             packet_text = str(prev_packet, "utf-8")
        
@@ -111,6 +112,8 @@ while True:
             time.sleep(1)
         except UnicodeDecodeError:
             print("Packet error")
+            display.text('PKT Error', 15, 20, 1)
+            time.sleep(1)
             continue
 
     if not btnA.value:

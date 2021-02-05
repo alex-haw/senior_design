@@ -64,6 +64,12 @@ arduino = serial.Serial('/dev/ttyACM0', 9600, timeout = 0.1)
 arduino.flush()
 distance = 0 #defalt if not reading distance from serial
 
+# Setup interupt for data logging
+import digitalio
+import board
+ready = digitalio.DigitalInOut(board.D22) # Make GPIO 22 high to trigger arduino interupt
+ready.direction = digitalio.Direction.OUTPUT
+
 #promt user for log file name, overwrite for now so that we don't have to clear the log
 logFile = "log.csv" #default
 #logFile = input("File to save data to: ")
@@ -83,30 +89,20 @@ while True:
     if packet is None:
         display.show()
         display.text('- Waiting for PKT -', 15, 20, 1)
-        # Read serial from arduino
-        #arduino.flush()
-        try:
-            distance = arduino.readline().decode('ascii').strip() # decode serial bytes and remove trailing characters (\n)
-        except UnicodeDecodeError: # ignore if problems occur
-            distance = "invalid characters revieved"
-        #arduino.flush()
-        print("Distance = " + str(distance))
     else:
         try:
             display.text('- PKT Received -', 15, 20, 1)
             prev_packet = packet
             packet_text = str(prev_packet, "utf-8")
-       
-            # Tell arduino we are ready to recieve
-            #arduino.write("1")
-            # Read serial from arduino
-            #try:
-            #    distance = arduino.readline().decode('utf-8').strip() # decode serial bytes and remove trailing characters (\n)
-            #except UnicodeDecodeError: # ignore if problems occur
-            #    distance = "invalid characters revieved"
+            ready.value = True # Tell arduino we are ready to ready distance
+            try:
+                distance = arduino.readline().decode('ascii').strip() # decode serial bytes and remove trailing characters (\n)
+            except UnicodeDecodeError: # ignore if problems occur
+                distance = "invalid characters revieved"
+            ready.value = False
         
-            #print(distance) # distance default is 0 of not reading from serial, uncomment for reading distance
-            print("Recieved: " + packet_text + " at distance of " + str(distance) + " m with RSSI= " +str(rfm9x.last_rssi))
+            print(distance) # distance default is 0 of not reading from serial, uncomment for reading distance
+            #print("Recieved: " + packet_text + " at distance of " + str(distance) + " m with RSSI= " +str(rfm9x.last_rssi))
         
             # get log data
             cpu = CPUTemperature()

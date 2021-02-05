@@ -12,5 +12,5 @@ See [Adafruit Installing Circuit Python](https://learn.adafruit.com/circuitpytho
 The installation process for the RFM9x can be found at [here.](https://learn.adafruit.com/lora-and-lorawan-radio-for-raspberry-pi/raspberry-pi-wiring)
 
 This Guide is for an example project for getting started with LoRa and raspberry pi.<br>
-For more info about the RFM9x python library, see [Adafruit_CircuitPython_RFM9x.](https://circuitpython.readthedocs.io/projects/rfm9x/en/latest/index.html and https://github.com/adafruit/Adafruit_CircuitPython_RFM9x)
+For more info about the RFM9x python library, see [Adafruit_CircuitPython_RFM9x.](https://github.com/adafruit/Adafruit_CircuitPython_RFM9x) and [Circuit Python's Documentation.](https://circuitpython.readthedocs.io/projects/rfm9x/en/latest/index.html)
 

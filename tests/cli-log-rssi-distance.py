@@ -102,7 +102,7 @@ while True:
             ready.value = False
         
             print(distance) # distance default is 0 of not reading from serial, uncomment for reading distance
-            #print("Recieved: " + packet_text + " at distance of " + str(distance) + " m with RSSI= " +str(rfm9x.last_rssi))
+            print("Recieved: " + packet_text + " at distance of " + str(distance) + " m with RSSI= " +str(rfm9x.last_rssi))
         
             # get log data
             cpu = CPUTemperature()

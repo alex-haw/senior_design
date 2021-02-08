@@ -1,7 +1,7 @@
 import time
 import os
 
-files = os.listdir('transmit_directory/')
+files = os.listdir('tx_dir/')
 currentfile = files[0]
 i = 0
 
@@ -11,8 +11,10 @@ while True:
 		print(files[x])
 	print("What file would you like to open?")
 	currentfile = input()
+	currentfilesize = os.stat("tx_dir/" + currentfile).st_size
+	print("The size of " +currentfile + " is: " + str(currentfilesize) + " bytes")
 	print("The contents of " + currentfile +" is:\n")
-	f = open("transmit_directory/" + currentfile, "r")
+	f = open("tx_dir/" + currentfile, "r")
 	for line in f:
 		print(line)
 	time.sleep(5)

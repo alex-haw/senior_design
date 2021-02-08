@@ -64,24 +64,22 @@ arduino = serial.Serial('/dev/ttyACM0', 9600, timeout = 0.1)
 arduino.flush()
 distance = 0 #defalt if not reading distance from serial
 
-# Setup interupt for data logging
+# Setup interupt for data logging, Pi sends a 1 to arduino to trigger interupt for writing distance to serial
 import digitalio
 import board
-ready = digitalio.DigitalInOut(board.D22) # Make GPIO 22 high to trigger arduino interupt
-ready.direction = digitalio.Direction.OUTPUT
+ready = digitalio.DigitalInOut(board.D22) # Make GPIO 22
+ready.direction = digitalio.Direction.OUTPUT 
 
-#promt user for log file name, overwrite for now so that we don't have to clear the log
-logFile = "log.csv" #default
-#logFile = input("File to save data to: ")
-log = open(logFile, 'a') # w = overwrite file, a = append
-log.write("#message,#date,#time,#distance (m),#temp (C),#RSSI (dBm)\n") # column label header if overwriting
+# log setup
+logFile = "log.csv" # save to log.csv without requiring input, default
+#logFile = input("File to save data to: ") # use for asking user what file to write to
+log = open(logFile, 'a') # w = overwrite file, a = append, depends on if you want to clear log each time or not
+log.write("#status,#date,#time,#distance (m),#temp (C),#RSSI (dBm)\n") # column label header if overwriting
 print("Logging data to " + logFile + "..." ) # tell user what program is doing
-# count = 1 # variable for delay pruposes
 
 while True:
     packet = None
-    # draw a box to clear the image
-    display.fill(0)
+    display.fill(0) # draw bok to clear image
     display.text('RasPi LoRa', 35, 0, 1)
 
     # check for packet rx
@@ -91,40 +89,41 @@ while True:
         display.text('- Waiting for PKT -', 15, 20, 1)
     else:
         try:
-            display.text('- PKT Received -', 15, 20, 1)
+            display.text('- PKT Received -', 15, 20, 1) # print to OLED
             prev_packet = packet
             packet_text = str(prev_packet, "utf-8")
-            ready.value = True # Tell arduino we are ready to ready distance
+
+            # Get distance
+            ready.value = True # Tell arduino we are ready to read distance
             try:
                 distance = arduino.readline().decode('ascii').strip() # decode serial bytes and remove trailing characters (\n)
             except UnicodeDecodeError: # ignore if problems occur
                 distance = "invalid characters revieved"
-            ready.value = False
-        
-            print(distance) # distance default is 0 of not reading from serial, uncomment for reading distance
+            ready.value = False # Tell arduino we are not ready to read distance
+
+            print(distance) # distance default value is 0 if not reading from serial, uncomment for reading distance
             print("Recieved: " + packet_text + " at distance of " + str(distance) + " m with RSSI= " +str(rfm9x.last_rssi))
-        
+
             # get log data
             cpu = CPUTemperature()
             temp = str(cpu.temperature)
-            message = str("Trial on: ")
+            message = str("Packet received")
             dateYMD = strftime("%Y-%m-%d")
             timeHMS = strftime("%H:%M:%S")
-        
+
             # Write log data to log
             print("Writing to log.csv")
             log.write("{0},{1},{2},{3},{4},{5}\n".format(message,dateYMD,timeHMS, str(distance), temp,str(rfm9x.last_rssi)))
             time.sleep(1)
-        except UnicodeDecodeError:
-            print("Packet error")
-            display.text('PKT Error', 15, 20, 1)
+          except UnicodeDecodeError:
+            print("Packet error") # print to cli
+            display.text('PKT Error', 15, 20, 1) # print to OLED
             message = str("Packet Error: ")
             dateYMD = strftime("%Y-%m-%d")
             timeHMS = strftime("%H:%M:%S")
             log.write("{0},{1},{2},{3},{4},{5}\n".format(message,dateYMD,timeHMS, str(distance),temp,str(rfm9x.last_rssi)))
             time.sleep(1)
             continue
-    #arduino.flush()
 
     if not btnA.value:
         # Send Button A

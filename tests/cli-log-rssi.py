@@ -1,3 +1,4 @@
+# this is used to not log distance
 """
 Example for using the RFM9x Radio with Raspberry Pi.
 
@@ -57,17 +58,17 @@ rfm9x = adafruit_rfm9x.RFM9x(spi, CS, RESET, 915.0)
 rfm9x.tx_power = 23
 prev_packet = None
 
-#promt user for log file name, overwrite for now so that we don't have to clear the log
-logFile = "log.csv" #default
-#logFile = input("File to save data to: ")
-log = open(logFile, 'a') # w = overwrite file, a = append
-log.write("#message,#date,#time,#distance (m),#temp (C),#RSSI (dBm)\n") # column label header if overwriting
+# log setup
+logFile = "log.csv" # save to log.csv without requiring input, default
+#logFile = input("File to save data to: ") # use for asking user what file to write to
+log = open(logFile, 'a') # w = overwrite file, a = append, depends on if you want to clear log each time or not
+log.write("#status,#date,#time,#distance (m),#temp (C),#RSSI (dBm)\n") # column label header if overwriting
 print("Logging data to " + logFile + "..." ) # tell user what program is doing
-distance = 0 # dummy value since not logging distance in this program
+distance = 0 # set distance to zero cause we are not logging distance now
 
 while True:
     packet = None
-    display.fill(0) #draw a box to clear the image
+    display.fill(0) # draw bok to clear image
     display.text('RasPi LoRa', 35, 0, 1)
 
     # check for packet rx
@@ -76,26 +77,26 @@ while True:
         display.show()
         display.text('- Waiting for PKT -', 15, 20, 1)
     else:
-        try: # try to log everything as long as packet can be decoded (fully recieved)
-             display.text('- PKT Received -', 15, 20, 1) # print to OLED display
+        try:
+            display.text('- PKT Received -', 15, 20, 1) # print to OLED
             prev_packet = packet
-            packet_text = str(prev_packet, "utf-8") 
-            print("Recieved: " + packet_text + " with RSSI= " + str(rfm9x.last_rssi)) # print to cli 
+            packet_text = str(prev_packet, "utf-8")
+            print("Recieved: " + packet_text + "m with RSSI= " +str(rfm9x.last_rssi)) # print to cli
 
             # get log data
             cpu = CPUTemperature()
             temp = str(cpu.temperature)
-            message = str("Trial on: ")
+            message = str("Packet received")
             dateYMD = strftime("%Y-%m-%d")
             timeHMS = strftime("%H:%M:%S")
 
             # Write log data to log
-            print("Writing to log.csv") # print to cli
+            print("Writing to log.csv")
             log.write("{0},{1},{2},{3},{4},{5}\n".format(message,dateYMD,timeHMS, str(distance), temp,str(rfm9x.last_rssi)))
             time.sleep(1)
-        except UnicodeDecodeError: # if the packet is not able to be decode
-            print("Packet error")
-            display.text('PKT Error', 15, 20, 1)
+          except UnicodeDecodeError:
+            print("Packet error") # print to cli
+            display.text('PKT Error', 15, 20, 1) # print to OLED
             message = str("Packet Error: ")
             dateYMD = strftime("%Y-%m-%d")
             timeHMS = strftime("%H:%M:%S")

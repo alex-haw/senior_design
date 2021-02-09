@@ -56,6 +56,12 @@ RESET = DigitalInOut(board.D25)
 spi = busio.SPI(board.SCK, MOSI=board.MOSI, MISO=board.MISO)
 rfm9x = adafruit_rfm9x.RFM9x(spi, CS, RESET, 915.0)
 rfm9x.tx_power = 23
+# rmf9x.signal_bandwdith = 125000 # default is 125000 (Hz), 125000 is used in long range 
+                                  # Signal_bandwdith can be 7800, 10400, 15600, 20800, 31250, 41700, 62500, 125000, 250000
+# rfm9x.coding_rate = 5 # Default is 5, can be 5,6,7,8
+                        # Coding_rate (CR) can be be set higher for better noise tolerance, and lower for increased bit rate
+# rfm9x.spreading_factor = 7 # default is 7, higher values increase the ability to distingish signal from noise
+                             # lower values increase data transmission rate
 prev_packet = None
 
 # log setup

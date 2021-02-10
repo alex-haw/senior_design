@@ -70,6 +70,12 @@ while int(choice) == 2: # TX Mode
         print("***** File size exceeds packetsize, multiple packets will be sent *****\n")
         print("***** This function has not been created yet")
         # Parse files
+        #sentsize = 0 # variable to keep track of how much data has been sent
+        #f = open("tx_dir/" + currentfile,"r")
+        #while sentsize < filesize :
+             # get first 251 bytes
+             # send it through LoRa
+             # add 251 to sent size
     else:
         # Send contents with one packet
         print(currentfile + " is now being sent through LoRa\n")

@@ -38,7 +38,7 @@ choice = input("Enter Number:")
 while int(choice) == 1: # RX Mode
     packet = None
     # check for packet rx
-    packet = rfm9x.receive()
+    packet = rfm9x.receive(timeout=5) # wait for recieve for timout duration.
     if packet is None:
         print("Waiting for Packet")
     else:
@@ -46,7 +46,7 @@ while int(choice) == 1: # RX Mode
         prev_packet = packet
         packet_text = str(prev_packet, "utf-8")
         print("Packet Received, Writing to 'receivedfile' now")
-        w = open("rx_dir/receivedfile", "a") 
+        w = open("rx_dir/receivedfile.txt", "a") 
         w.write(packet_text)
         time.sleep(1)
 
@@ -68,6 +68,7 @@ while int(choice) == 2: # TX Mode
     filesize = os.stat("tx_dir/" + currentfile).st_size # get file size in bytes
     if filesize > 252:
         print("***** File size exceeds packetsize, multiple packets will be sent *****\n")
+        print("***** This function has not been created yet")
         # Parse files
     else:
         # Send contents with one packet

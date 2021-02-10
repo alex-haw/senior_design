@@ -13,8 +13,10 @@ while True:
 	currentfile = input()
 	currentfilesize = os.stat("tx_dir/" + currentfile).st_size
 	print("The size of " +currentfile + " is: " + str(currentfilesize) + " bytes")
-	print("The contents of " + currentfile +" is:\n")
+	#print("The contents of " + currentfile +" is:\n")
 	f = open("tx_dir/" + currentfile, "r")
-	for line in f:
-		print(line)
+	#for line in f:
+	#	print(line)	
+	start = f.read(1)
+	print(start)
 	time.sleep(5)

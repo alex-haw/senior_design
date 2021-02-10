@@ -30,6 +30,7 @@ prev_packet = None
 files = os.listdir("tx_dir") # get files from this directory
 currentfile = files[0]
 i = 0
+open("rx_dir/receivedfile.txt","w").close() # open file and close to clear it when program starts
 
 print("Please Choose a Mode: \n RX=1\n TX=2\n")
 choice = input("Enter Number:")
@@ -45,7 +46,7 @@ while int(choice) == 1: # RX Mode
         prev_packet = packet
         packet_text = str(prev_packet, "utf-8")
         print("Packet Received, Writing to 'receivedfile' now")
-        w = open("rx_dir/receivedfile", "a")
+        w = open("rx_dir/receivedfile", "a") 
         w.write(packet_text)
         time.sleep(1)
 

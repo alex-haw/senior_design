@@ -32,7 +32,7 @@ prev_packet = None
 files = os.listdir("tx_dir") # get files from this directory
 currentfile = files[0]
 i = 0 # variable for listing files
-receivedfile = "recievedfile.txt" # default file to write to
+receivedfile = "rfile.txt" # default file to write to
 open("rx_dir/" + receivedfile,"w").close() # open file and close to clear it when program starts
 
 # Chunk Setup
@@ -85,7 +85,7 @@ while int(choice) == 2: # TX Mode
         while sent_size < filesize:
             current_chunk = f.read(chunk_size) # read chunk of file
             print("Chunk " + str(chunk_number) + " contains:" + str(current_chunk)) # Print chunk of file
-            #tx_data = bytes(current_chunk, "utf-8")
+            tx_data = bytes(current_chunk, "utf-8")
             sent_size = sent_size + chunk_size
             chunk_number += 1
 

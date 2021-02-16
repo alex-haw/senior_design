@@ -52,8 +52,8 @@ while int(choice) == 1: # RX Mode
         # Display the packet has been received and rssi
         prev_packet = packet
         packet_text = str(prev_packet, "utf-8")
-        print("Packet Received, Writing to 'receivedfile' now")
-        w = open("rx_dir/receivedfile.txt", "a") 
+        print("Packet Received, Writing to " + receivedfile + " now")
+        w = open("rx_dir/" + receivedfile, "a") 
         w.write(packet_text)
         time.sleep(1)
 

@@ -7,6 +7,7 @@ files = os.listdir('tx_dir/')
 currentfile = files[0]
 i = 0
 chunk_size = 10 # chunk size in bytes
+sent_size = 0
 
 while True:
 	# Show Files
@@ -24,15 +25,20 @@ while True:
 	
 	# Open file
 	f = open("tx_dir/" + currentfile, "r")
+
 	
 	# Break file into chunks
-	chunk1 = f.read(chunk_size) # first chunk_size of file
-	chunk2 = f.read(chunk_size) # second chunk_size of file
-	chunk3 = f.read(chunk_size)
+	while sent_size < currentfilesize:
+		current_chunk = f.read(chunk_size) # read chunk of file
+		print("This chunk contains:" + str(current_chunk))# Print chunk of file
+		sent_size = sent_size + chunk_size
+	#chunk1 = f.read(chunk_size) # first chunk_size of file
+	#chunk2 = f.read(chunk_size) # second chunk_size of file
+	#chunk3 = f.read(chunk_size)
 	# Show Chunks
-	print("The first " + str(chunk_size) + " byte chunk of " + currentfile + " is:" + str(chunk1))
-	print("The second " + str(chunk_size) + " byte chunk of " + currentfile + " is:" + str(chunk2))
-	print("The third " + str(chunk_size) + " byte chunk of " + currentfile + " is:" + str(chunk3))
+	#print("The first " + str(chunk_size) + " byte chunk of " + currentfile + " is:" + str(chunk1))
+	#print("The second " + str(chunk_size) + " byte chunk of " + currentfile + " is:" + str(chunk2))
+	#print("The third " + str(chunk_size) + " byte chunk of " + currentfile + " is:" + str(chunk3))
 
 	#print("The contents of " + currentfile +" is:\n")
 	#f = open("tx_dir/" + currentfile, "r")

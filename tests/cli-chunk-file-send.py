@@ -86,8 +86,10 @@ while int(choice) == 2: # TX Mode
             current_chunk = f.read(chunk_size) # read chunk of file
             print("Chunk " + str(chunk_number) + " contains:" + str(current_chunk)) # Print chunk of file
             tx_data = bytes(current_chunk, "utf-8")
+            rfm9x.send(tx_data)
             sent_size = sent_size + chunk_size
             chunk_number += 1
+            #time.sleep(3) # pause for 1 second
 
     else:
         # Send contents with one packet

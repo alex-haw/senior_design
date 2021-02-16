@@ -27,10 +27,17 @@ rfm9x.tx_power = 23
 # rfm9x.spreading_factor = 7 # default is 7, higher values increase the ability to distingish signal from noise
                              # lower values increase data transmission rate
 prev_packet = None
+
+# file setup
 files = os.listdir("tx_dir") # get files from this directory
 currentfile = files[0]
-i = 0
-open("rx_dir/receivedfile.txt","w").close() # open file and close to clear it when program starts
+i = 0 # variable for listing files
+receivedfile = "recievedfile.txt" # default file to write to
+open("rx_dir/" + receivedfile,"w").close() # open file and close to clear it when program starts
+
+# Chunk Setup
+chunk_size = 250 # chunk size in bytes, set equal to maximum packet size
+
 
 print("Please Choose a Mode: \n RX=1\n TX=2\n")
 choice = input("Enter Number:")
@@ -38,7 +45,7 @@ choice = input("Enter Number:")
 while int(choice) == 1: # RX Mode
     packet = None
     # check for packet rx
-    packet = rfm9x.receive(timeout=5) # wait for recieve for timout duration.
+    packet = rfm9x.receive(timeout=5) # wait for recieve for timout duration in seconds.
     if packet is None:
         print("Waiting for Packet")
     else:
@@ -56,6 +63,7 @@ while int(choice) == 2: # TX Mode
     for x in range(len(files)): # show all files
         print(files[x])
     print("\n")
+
     # Ask User to Choose a File
     currentfile = input("What file would you like to open? (include .txt)")
 
@@ -66,16 +74,21 @@ while int(choice) == 2: # TX Mode
     #    print(line)
 
     filesize = os.stat("tx_dir/" + currentfile).st_size # get file size in bytes
-    if filesize > 252:
+    f = open("tx_dir/" + currentfile, "r") # open file
+
+    if filesize > chunk_size: # if file is too large
         print("***** File size exceeds packetsize, multiple packets will be sent *****\n")
-        print("***** This function has not been created yet")
-        # Parse files
-        #sentsize = 0 # variable to keep track of how much data has been sent
-        #f = open("tx_dir/" + currentfile,"r")
-        #while sentsize < filesize :
-             # get first 251 bytes
-             # send it through LoRa
-             # add 251 to sent size
+        sent_size = 0 # clear sent size
+        chunk_number = 1 # clear chunk number
+
+        # Send file in chunks
+        while sent_size < filesize:
+            current_chunk = f.read(chunk_size) # read chunk of file
+            print("Chunk " + str(chunk_number) + " contains:" + str(current_chunk)) # Print chunk of file
+            #tx_data = bytes(current_chunk, "utf-8")
+            sent_size = sent_size + chunk_size
+            chunk_number += 1
+
     else:
         # Send contents with one packet
         print(currentfile + " is now being sent through LoRa\n")

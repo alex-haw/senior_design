@@ -40,6 +40,7 @@ chunk_size = 240 # chunk size in bytes, set equal to maximum packet size
 pkt_num = "00"
 tx_reserve = "ff"
 req_reserve = 0
+pkt_num_int = 0
 
 print("Please Choose a Mode: \n RX=1\n TX=2\n")
 choice = input("Enter Number:")
@@ -87,6 +88,7 @@ while int(choice) == 2: # TX Mode
         print("***** File size exceeds packetsize, multiple packets will be sent *****\n")
         sent_size = 0 # clear sent size
         chunk_number = 1 # clear chunk number
+        pkt_num = "00"
 
         # Send file in chunks
         while sent_size < filesize:
@@ -97,17 +99,36 @@ while int(choice) == 2: # TX Mode
             sent_size = sent_size + chunk_size
             chunk_number += 1
 
+            packet = None
+            tries = 0;
+            while tries < 3 and packet is None:
+                packet = rfm9x.receive(timeout = 5)
+                if packet is None or int(str(packet,"utf-8")):
+                    print("No ACK, Resending packet #" + pkt_num)
+                    rfm9x.send(tx_data)
+                    tries += 1
+                if packet is not None:
+                    packet_txt = str(packet,"utf-8")
+                    if packet_txt == pkt_num:
+                        print("Error in received pkt, resending")
+                        rfm9x.send(tx_data)
+                        tries += 1
+                        packet = None
+            if packet is None:
+                print("No acknowledge recieved, canceling send")
+                break
             #increment packet number
             pkt_num = int(pkt_num,16)
             pkt_num += 1
+            pkt_num_int += 1
             pkt_num = hex(pkt_num)
             pkt_num = str(pkt_num)
             if len(pkt_num) < 4:
                 pkt_num = "0" + pkt_num[2:]
-            else
+            else:
                 pkt_num = pkt_num[2:]
             print(pkt_num)
-            #time.sleep(3) # pause for 1 second
+            #time.sleep(3) # pause for 1 sec
 
     else:
         # Send contents with one packet

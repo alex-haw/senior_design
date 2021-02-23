@@ -55,8 +55,12 @@ while int(choice) == 1: # RX Mode
         prev_packet = packet
         packet_text = str(prev_packet, "utf-8")
         pkt_rec = packet_text[0:2]
-        tx_fill = packet_text[3:5]
-        packet_text = packet_text[5:]
+        pkt_rec = int(pkt_rec,16)
+        tx_fill = packet_text[2:4]
+        tx_fill = int(tx_fill,16)
+        print(pkt_rec)
+        print(tx_fill)
+        packet_text = packet_text[4:]
         print("Packet Received, Writing to " + receivedfile + " now")
         w = open("rx_dir/" + receivedfile, "a") 
         w.write(packet_text)

@@ -103,11 +103,11 @@ while int(choice) == 2: # TX Mode
             tries = 0;
             while tries < 3 and packet is None:
                 packet = rfm9x.receive(timeout = 5)
-                if packet is None or int(str(packet,"utf-8")):
+                if packet is None:
                     print("No ACK, Resending packet #" + pkt_num)
                     rfm9x.send(tx_data)
                     tries += 1
-                if packet is not None:
+                else:
                     packet_txt = str(packet,"utf-8")
                     if packet_txt == pkt_num:
                         print("Error in received pkt, resending")

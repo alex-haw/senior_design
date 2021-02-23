@@ -36,8 +36,10 @@ receivedfile = "rfile.txt" # default file to write to
 open("rx_dir/" + receivedfile,"w").close() # open file and close to clear it when program starts
 
 # Chunk Setup
-chunk_size = 250 # chunk size in bytes, set equal to maximum packet size
-
+chunk_size = 240 # chunk size in bytes, set equal to maximum packet size
+pkt_num = "00"
+tx_reserve = "ff"
+req_reserve = 0
 
 print("Please Choose a Mode: \n RX=1\n TX=2\n")
 choice = input("Enter Number:")
@@ -52,6 +54,9 @@ while int(choice) == 1: # RX Mode
         # Display the packet has been received and rssi
         prev_packet = packet
         packet_text = str(prev_packet, "utf-8")
+        pkt_rec = packet_text[0:2]
+        tx_fill = packet_text[3:5]
+        packet_text = packet_text[5:]
         print("Packet Received, Writing to " + receivedfile + " now")
         w = open("rx_dir/" + receivedfile, "a") 
         w.write(packet_text)
@@ -85,7 +90,7 @@ while int(choice) == 2: # TX Mode
         while sent_size < filesize:
             current_chunk = f.read(chunk_size) # read chunk of file
             print("Chunk " + str(chunk_number) + " contains:" + str(current_chunk)) # Print chunk of file
-            tx_data = bytes(current_chunk, "utf-8")
+            tx_data = bytes(pkt_num + tx_reserve + current_chunk, "utf-8")
             rfm9x.send(tx_data)
             sent_size = sent_size + chunk_size
             chunk_number += 1

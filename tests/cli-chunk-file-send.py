@@ -58,8 +58,6 @@ while int(choice) == 1: # RX Mode
         pkt_rec = int(pkt_rec,16)
         tx_fill = packet_text[2:4]
         tx_fill = int(tx_fill,16)
-        print(pkt_rec)
-        print(tx_fill)
         packet_text = packet_text[4:]
         print("Packet Received, Writing to " + receivedfile + " now")
         w = open("rx_dir/" + receivedfile, "a") 
@@ -98,6 +96,17 @@ while int(choice) == 2: # TX Mode
             rfm9x.send(tx_data)
             sent_size = sent_size + chunk_size
             chunk_number += 1
+
+            #increment packet number
+            pkt_num = int(pkt_num,16)
+            pkt_num += 1
+            pkt_num = hex(pkt_num)
+            pkt_num = str(pkt_num)
+            if len(pkt_num) < 4:
+                pkt_num = "0" + pkt_num[2:]
+            else
+                pkt_num = pkt_num[2:]
+            print(pkt_num)
             #time.sleep(3) # pause for 1 second
 
     else:

@@ -483,3 +483,322 @@ Traceback (most recent call last):
   File "firsttest.py", line 73, in <module>
     packet_text = str(prev_packet, "utf-8")
 UnicodeDecodeError: 'utf-8' codec can't decode byte 0xff in position 0: invalid start byte
+Logging data to log.csv...
+Recieved: Hellom with RSSI= -54
+Writing to log.csv
+Recieved: Hellom with RSSI= -54
+Writing to log.csv
+Recieved: Hellom with RSSI= -54
+Writing to log.csv
+Recieved: Hellom with RSSI= -54
+Writing to log.csv
+Recieved: Hellom with RSSI= -54
+Writing to log.csv
+Recieved: Hellom with RSSI= -54
+Writing to log.csv
+Recieved: Hellom with RSSI= -54
+Writing to log.csv
+Recieved: Hellom with RSSI= -54
+Writing to log.csv
+Recieved: Hellom with RSSI= -52
+Writing to log.csv
+Recieved: Hellom with RSSI= -54
+Writing to log.csv
+Recieved: Hellom with RSSI= -54
+Writing to log.csv
+Recieved: Hellom with RSSI= -52
+Writing to log.csv
+Recieved: Hellom with RSSI= -53
+Writing to log.csv
+Recieved: Hellom with RSSI= -54
+Writing to log.csv
+Recieved: Hellom with RSSI= -53
+Writing to log.csv
+Recieved: Hellom with RSSI= -54
+Writing to log.csv
+Recieved: Hellom with RSSI= -52
+Writing to log.csv
+Recieved: Hellom with RSSI= -53
+Writing to log.csv
+Recieved: Hellom with RSSI= -54
+Writing to log.csv
+Recieved: Hellom with RSSI= -54
+Writing to log.csv
+Recieved: Hellom with RSSI= -54
+Writing to log.csv
+Recieved: Hellom with RSSI= -54
+Writing to log.csv
+Recieved: Hellom with RSSI= -52
+Writing to log.csv
+Recieved: Hellom with RSSI= -54
+Writing to log.csv
+Recieved: Hellom with RSSI= -55
+Writing to log.csv
+Recieved: Hellom with RSSI= -54
+Writing to log.csv
+Recieved: Hellom with RSSI= -55
+Writing to log.csv
+Recieved: Hellom with RSSI= -62
+Writing to log.csv
+Recieved: Hellom with RSSI= -67
+Writing to log.csv
+Recieved: Hellom with RSSI= -61
+Writing to log.csv
+Recieved: Hellom with RSSI= -62
+Writing to log.csv
+Recieved: Hellom with RSSI= -67
+Writing to log.csv
+Recieved: Hellom with RSSI= -73
+Writing to log.csv
+Recieved: Hellom with RSSI= -72
+Writing to log.csv
+Recieved: Hellom with RSSI= -69
+Writing to log.csv
+Recieved: Hellom with RSSI= -75
+Writing to log.csv
+Recieved: Hellom with RSSI= -67
+Writing to log.csv
+Recieved: Hellom with RSSI= -55
+Writing to log.csv
+Recieved: Hellom with RSSI= -61
+Writing to log.csv
+Recieved: Hellom with RSSI= -72
+Writing to log.csv
+Recieved: Hellom with RSSI= -53
+Writing to log.csv
+Recieved: Hellom with RSSI= -55
+Writing to log.csv
+Recieved: Hellom with RSSI= -42
+Writing to log.csv
+Recieved: Hellom with RSSI= -75
+Writing to log.csv
+Recieved: Hellom with RSSI= -56
+Writing to log.csv
+Recieved: Hellom with RSSI= -64
+Writing to log.csv
+Recieved: Hellom with RSSI= -54
+Writing to log.csv
+Recieved: Hellom with RSSI= -62
+Writing to log.csv
+Recieved: Hellom with RSSI= -54
+Writing to log.csv
+Recieved: Hellom with RSSI= -54
+Writing to log.csv
+Recieved: Hellom with RSSI= -42
+Writing to log.csv
+Recieved: Hellom with RSSI= -56
+Writing to log.csv
+Recieved: Hellom with RSSI= -67
+Writing to log.csv
+Recieved: Hellom with RSSI= -85
+Writing to log.csv
+Recieved: Hellom with RSSI= -81
+Writing to log.csv
+Recieved: Hellom with RSSI= -83
+Writing to log.csv
+Recieved: Hellom with RSSI= -78
+Writing to log.csv
+Recieved: Hellom with RSSI= -87
+Writing to log.csv
+Recieved: Hellom with RSSI= -88
+Writing to log.csv
+Recieved: Hellom with RSSI= -92
+Writing to log.csv
+Recieved: Hellom with RSSI= -108
+Writing to log.csv
+Recieved: Hellom with RSSI= -103
+Writing to log.csv
+Recieved: Hellom with RSSI= -92
+Writing to log.csv
+Recieved: Hellom with RSSI= -93
+Writing to log.csv
+Recieved: Hellom with RSSI= -97
+Writing to log.csv
+Recieved: Hellom with RSSI= -94
+Writing to log.csv
+Recieved: Hellom with RSSI= -102
+Writing to log.csv
+Recieved: Hel\im with RSSI= -112
+Writing to log.csv
+Recieved: Hellom with RSSI= -102
+Writing to log.csv
+Recieved: Hellom with RSSI= -94
+Writing to log.csv
+Recieved: Hellom with RSSI= -98
+Writing to log.csv
+Recieved: Hellom with RSSI= -108
+Writing to log.csv
+Recieved: Hellom with RSSI= -101
+Writing to log.csv
+Recieved: Hellom with RSSI= -109
+Writing to log.csv
+Recieved: Hellom with RSSI= -108
+Writing to log.csv
+Recieved: Hellom with RSSI= -103
+Writing to log.csv
+Recieved: Hellom with RSSI= -99
+Writing to log.csv
+Recieved: Hellom with RSSI= -100
+Writing to log.csv
+Recieved: Hellom with RSSI= -104
+Writing to log.csv
+Recieved: Hellom with RSSI= -101
+Writing to log.csv
+Recieved: Hellom with RSSI= -102
+Writing to log.csv
+Recieved: Hellom with RSSI= -100
+Writing to log.csv
+Recieved: Hellom with RSSI= -110
+Writing to log.csv
+Recieved: Hellom with RSSI= -108
+Writing to log.csv
+Recieved: Hellom with RSSI= -102
+Writing to log.csv
+Recieved: Hellom with RSSI= -100
+Writing to log.csv
+Recieved: Hellom with RSSI= -100
+Writing to log.csv
+Recieved: Hellom with RSSI= -105
+Writing to log.csv
+Recieved: Hellom with RSSI= -108
+Writing to log.csv
+Recieved: Hellom with RSSI= -111
+Writing to log.csv
+Recieved: Hellom with RSSI= -99
+Writing to log.csv
+Recieved: Hellom with RSSI= -104
+Writing to log.csv
+Recieved: Hellom with RSSI= -104
+Writing to log.csv
+Recieved: Hellom with RSSI= -113
+Writing to log.csv
+Recieved: Hellom with RSSI= -113
+Writing to log.csv
+Recieved: Hellom with RSSI= -107
+Writing to log.csv
+Recieved: Hellom with RSSI= -119
+Writing to log.csv
+Recieved: Hellom with RSSI= -120
+Writing to log.csv
+Recieved: Hellom with RSSI= -114
+Writing to log.csv
+Recieved: Hellom with RSSI= -107
+Writing to log.csv
+Recieved: Hellom with RSSI= -109
+Writing to log.csv
+Recieved: Hellom with RSSI= -106
+Writing to log.csv
+Recieved: Hellom with RSSI= -118
+Writing to log.csv
+Recieved: Hellom with RSSI= -117
+Writing to log.csv
+Recieved: Hellom with RSSI= -115
+Writing to log.csv
+Recieved: Hellom with RSSI= -109
+Writing to log.csv
+Recieved: Hellom with RSSI= -111
+Writing to log.csv
+Recieved: Hellom with RSSI= -113
+Writing to log.csv
+Recieved: Hellom with RSSI= -114
+Writing to log.csv
+Recieved: Hellom with RSSI= -112
+Writing to log.csv
+Recieved: Hellom with RSSI= -112
+Writing to log.csv
+Recieved: Hellom with RSSI= -114
+Writing to log.csv
+Recieved: Hellom with RSSI= -109
+Writing to log.csv
+Recieved: Hellom with RSSI= -109
+Writing to log.csv
+Recieved: Hellom with RSSI= -115
+Writing to log.csv
+Recieved: Hellom with RSSI= -113
+Writing to log.csv
+Recieved: Hellom with RSSI= -111
+Writing to log.csv
+Recieved: Hellom with RSSI= -111
+Writing to log.csv
+Recieved: Hellom with RSSI= -114
+Writing to log.csv
+Recieved: Hellom with RSSI= -107
+Writing to log.csv
+Recieved: Hellom with RSSI= -114
+Writing to log.csv
+Recieved: Hellom with RSSI= -112
+Writing to log.csv
+Recieved: Hellom with RSSI= -118
+Writing to log.csv
+Recieved: Hellom with RSSI= -120
+Writing to log.csv
+Packet error
+Recieved: Hellom with RSSI= -117
+Writing to log.csv
+Recieved: Hellom with RSSI= -117
+Writing to log.csv
+Recieved: Hellom with RSSI= -123
+Writing to log.csv
+Recieved: Hellom with RSSI= -118
+Writing to log.csv
+Recieved: Hellom with RSSI= -120
+Writing to log.csv
+Recieved: Hellom with RSSI= -119
+Writing to log.csv
+Recieved: Hellom with RSSI= -119
+Writing to log.csv
+Recieved: Hellom with RSSI= -115
+Writing to log.csv
+Recieved: Hellom with RSSI= -120
+Writing to log.csv
+Recieved: Hellom with RSSI= -113
+Writing to log.csv
+Recieved: Hellom with RSSI= -118
+Writing to log.csv
+Recieved: Hellom with RSSI= -116
+Writing to log.csv
+Recieved: Hellom with RSSI= -118
+Writing to log.csv
+Recieved: Hellom with RSSI= -122
+Writing to log.csv
+Recieved: Hellom with RSSI= -124
+Writing to log.csv
+Recieved: Hellom with RSSI= -121
+Writing to log.csv
+Recieved: Hellom with RSSI= -122
+Writing to log.csv
+Recieved: Hellom with RSSI= -121
+Writing to log.csv
+Recieved: Hellom with RSSI= -123
+Writing to log.csv
+Recieved: Hellom with RSSI= -122
+Writing to log.csv
+Recieved: Hellom with RSSI= -123
+Writing to log.csv
+Recieved: Hellom with RSSI= -122
+Writing to log.csv
+Recieved: Hellom with RSSI= -118
+Writing to log.csv
+Recieved: Hellom with RSSI= -119
+Writing to log.csv
+Recieved: Hellom with RSSI= -117
+Writing to log.csv
+Recieved: Hellom with RSSI= -124
+Writing to log.csv
+Recieved: Hellom with RSSI= -117
+Writing to log.csv
+Recieved: Hellom with RSSI= -123
+Writing to log.csv
+Recieved: Hellom with RSSI= -121
+Writing to log.csv
+Recieved: Hellom with RSSI= -123
+Writing to log.csv
+Recieved: Hellom with RSSI= -123
+Writing to log.csv
+Recieved: Hellom with RSSI= -116
+Writing to log.csv
+Recieved: Hellom with RSSI= -125
+Writing to log.csv
+Recieved: Hellom with RSSI= -121
+Writing to log.csv
+Recieved: Hel\om with RSSI= -125

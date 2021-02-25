@@ -36,7 +36,7 @@ rfm9x.tx_power = 23
                              # Valid values are limited to 6, 7, 8, 9, 10, 11, or 12
 prev_packet = None
 
-mode = "RX"
+mode = "TX"
 
 while True:
     packet = None
@@ -46,7 +46,7 @@ while True:
     print("* with signal bandwidth of: " +str(bw) +" Hz *")
 
     print("Would you like to this program to TX or RX (TX/RX)")
-    mode = input()
+    #mode = input()
     print(str(mode) + " mode has been set")
     print("Please restart program if you would like to change mode")
 

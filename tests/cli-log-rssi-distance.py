@@ -1,5 +1,4 @@
 """
-Example for using the RFM9x Radio with Raspberry Pi.
 
 Learn Guide: https://learn.adafruit.com/lora-and-lorawan-for-raspberry-pi
 Author: Brent Rubell for Adafruit Industries
@@ -121,7 +120,7 @@ while True:
             print("Writing to log.csv")
             log.write("{0},{1},{2},{3},{4},{5}\n".format(message,dateYMD,timeHMS, str(distance), temp,str(rfm9x.last_rssi)))
             time.sleep(1)
-          except UnicodeDecodeError:
+        except UnicodeDecodeError:
             print("Packet error") # print to cli
             display.text('PKT Error', 15, 20, 1) # print to OLED
             message = str("Packet Error: ")

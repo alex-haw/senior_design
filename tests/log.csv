@@ -730,3 +730,39 @@ Trial on: ,2021-02-05,16:10:09,-6,51.54,-62
 Trial on: ,2021-02-05,16:10:14,-11,51.54,-60
 Trial on: ,2021-02-05,16:10:19,-17,51.54,-63
 Trial on: ,2021-02-05,16:10:25,-18,52.078,-65
+#status,#date,#time,#distance (m),#temp (C),#RSSI (dBm)
+#status,#date,#time,#distance (m),#temp (C),#RSSI (dBm)
+Packet received,2021-02-25,13:50:55,,50.464,-63
+Packet received,2021-02-25,13:51:00,,52.616,-63
+Packet received,2021-02-25,13:51:05,,52.616,-75
+Packet received,2021-02-25,13:51:10,,52.616,-74
+Packet received,2021-02-25,13:51:15,,53.154,-69
+Packet received,2021-02-25,13:51:20,,53.154,-66
+Packet received,2021-02-25,13:51:25,,53.692,-65
+Packet received,2021-02-25,13:51:30,,52.616,-66
+Packet received,2021-02-25,13:51:35,,53.692,-65
+Packet received,2021-02-25,13:51:40,,53.692,-63
+Packet received,2021-02-25,13:51:45,,53.692,-67
+Packet received,2021-02-25,13:51:50,,53.692,-64
+#status,#date,#time,#distance (m),#temp (C),#RSSI (dBm)
+#status,#date,#time,#distance (m),#temp (C),#RSSI (dBm)
+#status,#date,#time,#distance (m),#temp (C),#RSSI (dBm)
+#status,#date,#time,#distance (m),#temp (C),#RSSI (dBm)
+#status,#date,#time,#distance (m),#temp (C),#RSSI (dBm)
+#status,#date,#time,#distance (m),#temp (C),#RSSI (dBm)
+#status,#date,#time,#distance (m),#temp (C),#RSSI (dBm)
+#status,#date,#time,#distance (m),#temp (C),#RSSI (dBm)
+Packet received,2021-02-25,14:44:40,0,52.616,-53
+Packet received,2021-02-25,14:44:45,0,53.692,-52
+Packet received,2021-02-25,14:44:50,0,53.692,-54
+Packet received,2021-02-25,14:44:55,0,54.23,-54
+#status,#date,#time,#distance (m),#temp (C),#RSSI (dBm)
+Packet received,2021-02-25,14:45:43,0,53.692,-52
+Packet received,2021-02-25,14:45:48,0,53.692,-54
+#status,#date,#time,#distance (m),#temp (C),#RSSI (dBm)
+Packet received,2021-02-25,14:48:36,0,52.616,-54
+Packet received,2021-02-25,14:48:41,0,53.692,-52
+Packet received,2021-02-25,14:48:46,0,53.692,-54
+Packet received,2021-02-25,14:48:51,0,54.23,-54
+Packet received,2021-02-25,14:48:56,0,54.768,-54
+Packet received,2021-02-25,14:49:01,0,55.306,-54

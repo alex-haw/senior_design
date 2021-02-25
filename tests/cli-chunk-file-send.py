@@ -41,70 +41,77 @@ pkt_num = "00"
 tx_reserve = "ff"
 req_reserve = 0
 pkt_num_int = 0
+next_pkt_request = 0
+
+# timing
+rec_scan_timeout = 1 # Timeout for initial RX scan
+
 
 print("Please Choose a Mode: \n RX=1\n TX=2\n")
 choice = input("Enter Number:")
 
 while int(choice) == 1: # RX Mode
     packet = None
-    # check for packet rx
-    packet = rfm9x.receive(timeout=5) # wait for recieve for timout duration in seconds.
-    if packet is None:
+    packet = rfm9x.receive(timeout=rec_scan_timeout) # wait 5 seconds for reciever timeout
+    if packet is None: # idle RX mode
         print("Waiting for Packet")
-    else:
-        # Display the packet has been received and rssi
+    else: # data  RX mode
+        # Parse Paket
         prev_packet = packet
         packet_text = str(prev_packet, "utf-8")
-        pkt_rec = packet_text[0:2]
-        pkt_rec = int(pkt_rec,16)
-        tx_fill = packet_text[2:4]
-        tx_fill = int(tx_fill,16)
-        packet_text = packet_text[4:]
-        print("Packet Received, Writing to " + receivedfile + " now")
-        w = open("rx_dir/" + receivedfile, "a") 
+        pkt_rec = packet_text[0:2] # get first two bytes for packet number
+        pkt_rec = int(pkt_rec,16)  # convert first two bytes to int
+        tx_fill = packet_text[2:4] # Place holder
+        tx_fill = int(tx_fill,16)  # place holder
+        packet_text = packet_text[4:] # get data from packet
+        
+        # Write data to file
+        print("Recieved Packet number: " + str(pkt_rec) + " Writing to " + receivedfile + " now")
+        w = open("rx_dir/" + receivedfile, "a") # add to file
         w.write(packet_text)
-        time.sleep(1)
+
+        # Request Next Packet
+        next_pkt_request = pkt_rec + 1 # integer
+        next_pkt_request = hex(next_pkt_request)
+        next_ptk_request = str(next_pkt_request)
+        next_pkt_request = bytes(next_pkt_request,"utf-8")
+
+
+        time.sleep(0.1) # Pause for 0.1 seconds
 
 while int(choice) == 2: # TX Mode
-    # List Files in Transmit Directory
+    # List Files in Transmit Directory And ask user what file to send
     print("The current files in tx_dir/ are:")
     for x in range(len(files)): # show all files
         print(files[x])
     print("\n")
-
-    # Ask User to Choose a File
-    currentfile = input("What file would you like to open? (include .txt)")
-
-    # Show Chosen File
-    #print("The contents of " + currentfile +" is:\n")
-    #f = open("tx_dir/" + currentfile, "r")
-    #for line in f:
-    #    print(line)
+    currentfile = input("What file would you like to open? (include .txt)") # Aks User to Choos File
 
     filesize = os.stat("tx_dir/" + currentfile).st_size # get file size in bytes
     f = open("tx_dir/" + currentfile, "r") # open file
 
-    if filesize > chunk_size: # if file is too large
-        print("***** File size exceeds packetsize, multiple packets will be sent *****\n")
-        sent_size = 0 # clear sent size
-        chunk_number = 1 # clear chunk number
-        pkt_num = "00"
+    # Send Multiple Packets
+    sent_size = 0 # clear sent size
+    chunk_number = 1 # clear chunk number
+    pkt_num = "00" # start with packet number 0
 
-        # Send file in chunks
-        while sent_size < filesize:
-            current_chunk = f.read(chunk_size) # read chunk of file
-            print("Chunk " + str(chunk_number) + " contains:" + str(current_chunk)) # Print chunk of file
-            tx_data = bytes(pkt_num + tx_reserve + current_chunk, "utf-8")
-            rfm9x.send(tx_data)
-            sent_size = sent_size + chunk_size
-            chunk_number += 1
+    # Send file in chunks
+    #while sent_size < filesize:
+    while True:
+        current_chunk = f.read(chunk_size) # read chunk of file
+        print("Chunk " + str(chunk_number) + " contains:" + str(current_chunk)) # Print chunk of file
+        tx_data = bytes(pkt_num + tx_reserve + current_chunk, "utf-8")
+        rfm9x.send(tx_data)
+        sent_size = sent_size + chunk_size
+        chunk_number += 1
 
+            # Send Next Packet
             packet = None
             tries = 0;
-            while tries < 3 and packet is None:
-                packet = rfm9x.receive(timeout = 5)
+            while tries < 3 and packet is None: # try sending 3 times
+                packet = rfm9x.receive(timeout = 5) # wati for the sender to send a request for next packet
                 if packet is None:
-                    print("No ACK, Resending packet #" + pkt_num)
+                    print("No ACK, Resending packet number " + pkt_num)
                     rfm9x.send(tx_data)
                     tries += 1
                 else:
@@ -130,10 +137,10 @@ while int(choice) == 2: # TX Mode
             print(pkt_num)
             #time.sleep(3) # pause for 1 sec
 
-    else:
-        # Send contents with one packet
-        print(currentfile + " is now being sent through LoRa\n")
-        f = open("tx_dir/" + currentfile, 'r')
-        tx_data = bytes(f.read(), "utf-8")
-        rfm9x.send(tx_data)
+    #else:
+    #    # Send contents with one packet
+    #    print(currentfile + " is now being sent through LoRa\n")
+    #    f = open("tx_dir/" + currentfile, 'r')
+    #    tx_data = bytes(f.read(), "utf-8")
+    #    rfm9x.send(tx_data)
     time.sleep(0.1)

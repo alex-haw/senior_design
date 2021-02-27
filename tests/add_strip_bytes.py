@@ -1,8 +1,7 @@
 data = "this is a sentance"
-number = 1
+print("The string says: " +data)
 
-frame = str(number) + data
-print(frame)
+data_bytes = bytes(data, "utf-8")
+print("The string when converted to bytes says: ")
+print(data_bytes)
 
-byte_frame = bytes(frame, "utf-8")
-print(byte_frame)

@@ -17,6 +17,6 @@ while True:
 	f = open("tx_dir/" + currentfile, "r")
 	#for line in f:
 	#	print(line)	
-	start = f.read(1)
+	start = f.read()
 	print(start)
 	time.sleep(5)

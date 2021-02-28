@@ -95,7 +95,7 @@ while int(choice) == 2: # TX Mode
 
     sent_size = 0 # clear sent size
     chunk_number = 1 # clear chunk number
-    pkt_num = "0x00" # start with packet number 0
+    pkt_num = "00" # start with packet number 0
 
     print(" The rest of this program is under construction")
     ############ Summary of File sending ######################
@@ -113,38 +113,41 @@ while int(choice) == 2: # TX Mode
     while sent_size < file_size:
         # get data from chunk of file
         print("Getting Chunk, beginning packet sending shortly ")
-        data = f.read(chunk_size) # read chunk of file
-        header = pkt_num # get header
+        data = f.read(chunk_size) # read chunk of file for data
+        header = pkt_num # get header from pkt_num
         tx_data = header + data # add header and data
-        print("tx_data" + tx_data)
+        print("The full packet (tx_data) is: " + tx_data)
 
         # Send 1 packet and check for ACK, resend if necasary
         packet = None # Clear packet in order to check for one.
         tries = 0; # clear tries for next send
-        packet = True # Uncomment to skip the following loop.
+        #packet = True # Uncomment to skip the following loop.
         while tries < 3 and packet is None: # try sending 3 times
             print("    Checking for ACK, pausing for 5 seconds")
             rec_packet = rfm9x.receive(timeout = 5) # Wait for 5 seconds for receiever to request packet
             if rec_packet is None: # If no packet received
                 print("No ACK, Resending packet number " + pkt_num)
                 rfm9x.send(tx_data) # send packet again
-                tries += 1
+                tries += 1 # incement tries
             else: # IF a packet is received
-                packet_txt = str(rec_packet,"utf-8") #convert packet to string
+                packet_txt = str(rec_packet,"utf-8") #convert packet to string, should have two characters
                 if packet_txt == pkt_num: # if the received packet is equal to packet_num
                     print("Error in received pkt, resending")
                     rfm9x.send(tx_data) # send packet gain
                     tries += 1
                     packet = None # empty packet to start try loop again
-                # If the packet is not equal to pkt_num, assume the receiver wants the next packet
+                else: # If the packet is not equal to pkt_num, assume receiver wants next packet for now
+                    continue # do nothing
             # go back to start of try sending 3 times unless the packet =/= pkt_num
 
         # If no ACK is recieved from reciever after 3 attempts
         if packet is None:
             print("No acknowledge recieved, canceling send")
-            break # Exits  [while sent_size < file_size:] and goes back to start of TX mode
+            break # Exits  [while sent_size < file_size:] and leads to the restart of TX mode
 
-        # Icrement pkt_num with string format 
+        # At this point it is assumed that the paket was correctly sent and recieved
+
+        # Increment pkt_num with string format for next packet
         print("pkt_num is currently " + pkt_num)
         # Set up numbers for sending next packet
         #pkt_num = hex(pkt_num)  # Convert pkt_num from string to hex
@@ -152,10 +155,13 @@ while int(choice) == 2: # TX Mode
         pkt_num += 1  # Incrmnt pkt_num
         pkt_num = "0x{:02x}".format(pkt_num) # Force two hex digits, IDK how this works, found on https://stackoverflow.com/questions/11676864/how-can-i-format-an-integer-to-a-two-digit-hex
         print("pkt_num is now " + pkt_num[-2:]) # print last two characters (hex Digits) from pkt_num
+
+        # Increase sent size (assume packet was sent for now)
+        sent_size = sent_size + chunk_size 
         time.sleep(1)
         # Go back to     while sent_size < file_size:
 
-    # After file is sent
+    # At this Point, the file should be either sent or too many failed attempts to send it occured
     time.sleep(1) # Pause for 1 second, go back to asking user for file to send
 
 ''' 
@@ -210,7 +216,7 @@ while int(choice) == 2: # TX Mode
     # End of TX mode
 '''
 
-# End Idle Mode
+# End Idle Mode (optional if a break in the TX mode
 while True:
-     print("The program is over due to a break in the TX mode, please restart program")
+     print("An ERROR has occured, please restart program")
      time.sleep(5)

@@ -78,7 +78,7 @@ while int(choice) == 1: # RX Mode
                 next_ptk_request = str(next_pkt_request)
                 next_pkt_request = bytes(next_pkt_request,"utf-8")
                 print("Requesting Next Packet")
-                time.sleep(1);
+                time.sleep(3);
                 rfm9x.send(next_pkt_request);
             else:
                 rfm9x.send(next_pkt_request);
@@ -101,7 +101,6 @@ while int(choice) == 2: # TX Mode
 
     howmanychunks = file_size/chunk_size
     print("It will take at least " + str(howmanychunks) + " packets to send this file")
-    time.sleep(1)
     sent_size = 0 # clear sent size
     chunk_number = 1 # clear chunk number
     pkt_num = "0x00" # start with packet number 0
@@ -131,9 +130,10 @@ while int(choice) == 2: # TX Mode
         packet = None # Clear packet in order to check for one.
         tries = 0; # clear tries for next send
         #packet = True # Uncomment to skip the following loop.
+        rfm9x.send(tx_data)
         while tries < 3 and packet is None: # try sending 3 times
             print("    Checking for ACK, pausing for 5 seconds")
-            packet = rfm9x.receive(timeout = 5) # Wait for 5 seconds for receiever to request packet
+            packet = rfm9x.receive(timeout = 10) # Wait for 5 seconds for receiever to request packet
             if packet is None: # If no packet received
                 print("No ACK, Resending packet number " + pkt_num)
                 rfm9x.send(tx_data) # send packet again

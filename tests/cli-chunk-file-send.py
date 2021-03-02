@@ -78,7 +78,7 @@ while int(choice) == 1: # RX Mode
                 next_ptk_request = str(next_pkt_request)
                 next_pkt_request = bytes(next_pkt_request,"utf-8")
                 print("Requesting Next Packet")
-                time.sleep(3);
+                time.sleep(1);
                 rfm9x.send(next_pkt_request);
             else:
                 rfm9x.send(next_pkt_request);
@@ -153,7 +153,6 @@ while int(choice) == 2: # TX Mode
         # If no ACK is recieved from reciever after 3 attempts
         if packet is None:
             print("No acknowledge recieved, canceling send")
-            time.sleep(2) # give user time to read above prompt
             break # Exits  [while sent_size < file_size:] and leads to the restart of TX mode
 
         # At this point it is assumed that the paket was correctly sent and recieved
@@ -170,7 +169,6 @@ while int(choice) == 2: # TX Mode
         # Increase sent size (assume packet was sent for now)
         sent_size = sent_size + chunk_size
         print("sent_size is now: " + str(sent_size)) 
-        time.sleep(1) # pause for 1 second
         # Go back to     while sent_size < file_size:
 
     # At this Point, the file should be either sent or too many failed attempts to send it occured

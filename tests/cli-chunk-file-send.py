@@ -66,6 +66,10 @@ while int(choice) == 1: # RX Mode
         pkt_rec = int(pkt_rec,16)  # convert first two bytes to int
         packet_text = packet_text[4:] # get data from packet
 
+        if pkt_rec != next_pkt_request:
+            f.send(next_pkt_request);
+            break;
+
         # Write data to file
         print("Recieved Packet number: " + str(pkt_rec) + " Writing to " + receivedfile + " now")
         w = open("rx_dir/" + receivedfile, "a") # add to file
@@ -77,6 +81,7 @@ while int(choice) == 1: # RX Mode
         next_ptk_request = str(next_pkt_request)
         next_pkt_request = bytes(next_pkt_request,"utf-8")
 
+        f.send(next_pkt_request);
 
         time.sleep(0.1) # Pause for 0.1 seconds
         # End of RX mode

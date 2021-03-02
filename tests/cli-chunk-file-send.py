@@ -84,7 +84,7 @@ while int(choice) == 1: # RX Mode
                 rfm9x.send(next_pkt_request);
             packet = None
             print("Waiting for packet #" + str(pkt_number))
-            packet = rfm9x.receive(timeout = 5)
+            packet = rfm9x.receive(timeout = 25)
         # End of RX mode
 
 ######### Transmit Mode
@@ -140,6 +140,7 @@ while int(choice) == 2: # TX Mode
                 tries += 1 # incement tries
             else: # IF a packet is received
                 packet_txt = str(packet,"utf-8") #convert packet to string, should have two characters
+                print("Ack Received")
                 if packet_txt == pkt_num[-2:]: # if the received packet is equal to packet_num
                     print("Error in received pkt, resending")
                     rfm9x.send(tx_data) # send packet gain

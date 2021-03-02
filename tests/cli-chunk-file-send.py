@@ -81,7 +81,7 @@ while int(choice) == 1: # RX Mode
         next_ptk_request = str(next_pkt_request)
         next_pkt_request = bytes(next_pkt_request,"utf-8")
 
-        f.send(next_pkt_request);
+        rfm9x.send(next_pkt_request);
 
         time.sleep(0.1) # Pause for 0.1 seconds
         # End of RX mode
@@ -125,11 +125,11 @@ while int(choice) == 2: # TX Mode
         header = pkt_num[-2:] # get last two characters from pkt-num
         tx_data = header + data # add header and data
         print("The full packet (tx_data) is: " + tx_data)
-
+        tx_data = bytes(tx_data,"utf-8")
         # Send 1 packet and check for ACK, resend if necasary
         packet = None # Clear packet in order to check for one.
         tries = 0; # clear tries for next send
-        packet = True # Uncomment to skip the following loop.
+        #packet = True # Uncomment to skip the following loop.
         while tries < 3 and packet is None: # try sending 3 times
             print("    Checking for ACK, pausing for 5 seconds")
             rec_packet = rfm9x.receive(timeout = 5) # Wait for 5 seconds for receiever to request packet

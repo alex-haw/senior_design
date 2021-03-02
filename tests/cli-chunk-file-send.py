@@ -72,7 +72,7 @@ while int(choice) == 1: # RX Mode
                 print("Recieved Packet number: " + str(pkt_rec) + " Writing to " + receivedfile + " now")
                 w.write(packet_text)
                 # Request Next Packet
-                pkt_number = 1
+                pkt_number += 1
                 next_pkt_request = pkt_rec + 1 # integer
                 next_pkt_request = hex(next_pkt_request)
                 next_ptk_request = str(next_pkt_request)
@@ -83,6 +83,7 @@ while int(choice) == 1: # RX Mode
             else:
                 rfm9x.send(next_pkt_request);
             packet = None
+            print("Waiting for packet #" + str(pkt_number))
             packet = rfm9x.receive(timeout = 5)
         # End of RX mode
 
@@ -138,7 +139,7 @@ while int(choice) == 2: # TX Mode
                 rfm9x.send(tx_data) # send packet again
                 tries += 1 # incement tries
             else: # IF a packet is received
-                packet_txt = str(rec_packet,"utf-8") #convert packet to string, should have two characters
+                packet_txt = str(packet,"utf-8") #convert packet to string, should have two characters
                 if packet_txt == pkt_num[-2:]: # if the received packet is equal to packet_num
                     print("Error in received pkt, resending")
                     rfm9x.send(tx_data) # send packet gain

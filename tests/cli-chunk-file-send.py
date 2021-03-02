@@ -53,6 +53,8 @@ choice = input("Enter Number:")
 
 
 while int(choice) == 1: # RX Mode
+    w = open("rx_dir/" + receivedfile, "a")
+    pkt_number = 0
     packet = None
     print("Waiting to recieve for 5 seconds")
     packet = rfm9x.receive(timeout=5) # wait 5 seconds for reciever timeout
@@ -60,30 +62,28 @@ while int(choice) == 1: # RX Mode
         print("Waiting for Packet")
     else: # data  RX mode
         # Parse Paket
-        prev_packet = packet
-        packet_text = str(prev_packet, "utf-8")
-        pkt_rec = packet_text[0:header_size] # get first two bytes for packet number
-        pkt_rec = int(pkt_rec,16)  # convert first two bytes to int
-        packet_text = packet_text[4:] # get data from packet
-
-        if pkt_rec != next_pkt_request:
-            f.send(next_pkt_request);
-            break;
-
-        # Write data to file
-        print("Recieved Packet number: " + str(pkt_rec) + " Writing to " + receivedfile + " now")
-        w = open("rx_dir/" + receivedfile, "a") # add to file
-        w.write(packet_text)
-
-        # Request Next Packet
-        next_pkt_request = pkt_rec + 1 # integer
-        next_pkt_request = hex(next_pkt_request)
-        next_ptk_request = str(next_pkt_request)
-        next_pkt_request = bytes(next_pkt_request,"utf-8")
-
-        rfm9x.send(next_pkt_request);
-
-        time.sleep(0.1) # Pause for 0.1 seconds
+        while packet is not None:
+            packet_text = str(packet, "utf-8")
+            pkt_rec = packet_text[0:header_size] # get first two bytes for packet number
+            pkt_rec = int(pkt_rec,16)  # convert first two bytes to int
+            packet_text = packet_text[header_size:] # get data from packet
+            if pkt_rec == pkt_number:
+                # Write data to file
+                print("Recieved Packet number: " + str(pkt_rec) + " Writing to " + receivedfile + " now")
+                w.write(packet_text)
+                # Request Next Packet
+                pkt_number = 1
+                next_pkt_request = pkt_rec + 1 # integer
+                next_pkt_request = hex(next_pkt_request)
+                next_ptk_request = str(next_pkt_request)
+                next_pkt_request = bytes(next_pkt_request,"utf-8")
+                print("Requesting Next Packet")
+                time.sleep(1);
+                rfm9x.send(next_pkt_request);
+            else:
+                rfm9x.send(next_pkt_request);
+            packet = None
+            packet = rfm9x.receive(timeout = 5)
         # End of RX mode
 
 ######### Transmit Mode
@@ -132,8 +132,8 @@ while int(choice) == 2: # TX Mode
         #packet = True # Uncomment to skip the following loop.
         while tries < 3 and packet is None: # try sending 3 times
             print("    Checking for ACK, pausing for 5 seconds")
-            rec_packet = rfm9x.receive(timeout = 5) # Wait for 5 seconds for receiever to request packet
-            if rec_packet is None: # If no packet received
+            packet = rfm9x.receive(timeout = 5) # Wait for 5 seconds for receiever to request packet
+            if packet is None: # If no packet received
                 print("No ACK, Resending packet number " + pkt_num)
                 rfm9x.send(tx_data) # send packet again
                 tries += 1 # incement tries
@@ -176,6 +176,6 @@ while int(choice) == 2: # TX Mode
     #End of TX mode, go back to start of tx mode
 
 # End Idle Mode (optional if a break in the TX mode
-while True:
-     print("An ERROR has occured, please restart program ********************************************")
-     time.sleep(5)
+#while True:
+ #    print("An ERROR has occured, please restart program ********************************************")
+  #   time.sleep(5)

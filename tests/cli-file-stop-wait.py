@@ -84,7 +84,7 @@ while int(choice) == 1: # RX Mode
                 rfm9x.send(next_pkt_request);
             packet = None
             print("Waiting for packet #" + str(pkt_number))
-            packet = rfm9x.receive(timeout = 25)
+            packet = rfm9x.receive(timeout = 25) # wait 25 seconds before assuming the sender as quit sending
         # End of RX mode
 
 ######### Transmit Mode
@@ -92,15 +92,16 @@ while int(choice) == 2: # TX Mode
     # List Files in Transmit Directory And ask user what fil to send
     print("The current files in tx_dir/ are:")
     for x in range(len(files)): # show all files
-        print(files[x])
+        print(str(x+1) + ": " + files[x])
     print("\n")
-    currentfile = input("What file would you like to open? (include .txt)") # Aks User to Choos File
-
+    #currentfile = input("What file would you like to open? (include .txt)") # Aks User to Choos File
+    option = input("Enter a Number: ")
+    currentfile = files[int(option)-1]
     file_size = os.stat("tx_dir/" + currentfile).st_size # get file size in bytes
     f = open("tx_dir/" + currentfile, "r") # open file
 
     howmanychunks = file_size/chunk_size
-    print("It will take at least " + str(howmanychunks) + " packets to send this file")
+    print("It will take at least " + str(howmanychunks) + " packets to send " + currentfile)
     sent_size = 0 # clear sent size
     chunk_number = 1 # clear chunk number
     pkt_num = "0x00" # start with packet number 0
@@ -122,7 +123,7 @@ while int(choice) == 2: # TX Mode
         # get data from chunk of file
         print("Getting Chunk, beginning packet sending shortly ")
         data = f.read(chunk_size) # read chunk of file for data
-        header = pkt_num[-2:] # get last two characters from pkt-num
+        header = pkt_num[-header_size:] # get last two characters from pkt-num
         tx_data = header + data # add header and data
         print("The full packet (tx_data) is: " + tx_data)
         tx_data = bytes(tx_data,"utf-8")
@@ -141,7 +142,7 @@ while int(choice) == 2: # TX Mode
             else: # IF a packet is received
                 packet_txt = str(packet,"utf-8") #convert packet to string, should have two characters
                 print("Ack Received")
-                if packet_txt == pkt_num[-2:]: # if the received packet is equal to packet_num
+                if packet_txt == pkt_num[-header_size:]: # if the received packet is equal to packet_num
                     print("Error in received pkt, resending")
                     rfm9x.send(tx_data) # send packet gain
                     tries += 1
@@ -158,13 +159,13 @@ while int(choice) == 2: # TX Mode
         # At this point it is assumed that the paket was correctly sent and recieved
 
         # Increment pkt_num with string format for next packet
-        print("pkt_num is currently " + pkt_num[-2:]) # print last charaters
+        print("pkt_num is currently " + pkt_num[-header_size:]) # print last charaters
         # Set up numbers for sending next packet
         #pkt_num = hex(pkt_num)  # Convert pkt_num from string to hex
         pkt_num = int(pkt_num,16)  # Convert pkt_num from hex    to int
         pkt_num += 1  # Incrmnt pkt_num
         pkt_num = "0x{:02x}".format(pkt_num) # Force two hex digits, IDK how this works, found on https://stackoverflow.com/questions/11676864/how-can-i-format-an-integer-to-a-two-digit-hex
-        print("pkt_num is now " + pkt_num[-2:] + "\n") # print last two characters (hex Digits) from pkt_num
+        print("pkt_num is now " + pkt_num[-header_size:] + "\n") # print last two characters (hex Digits) from pkt_num
 
         # Increase sent size (assume packet was sent for now)
         sent_size = sent_size + chunk_size

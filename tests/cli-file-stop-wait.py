@@ -77,7 +77,7 @@ while int(choice) == 1: # RX Mode
                 next_ptk_request = str(next_pkt_request)
                 next_pkt_request = bytes(next_pkt_request,"utf-8")
                 print("Requesting Next Packet")
-                #time.sleep(1);
+                #time.sleep(1); # removed this sleep to make it faster, still sends large files when commented
                 rfm9x.send(next_pkt_request);
             else: # if the recieved packet number was not what RX was expecting
                 rfm9x.send(next_pkt_request);
@@ -159,7 +159,7 @@ while int(choice) == 2: # TX Mode
         # Go back to     while sent_size < file_size:
 
     # At this Point, the file should be either sent or too many failed attempts to send it occured
-    print(" FILE HAS FINISHED SENDING ***********************************************)
+    print(" FILE HAS FINISHED SENDING *********************************************** ")
     time.sleep(1) # Pause for 1 second, go back to asking user for file to send
     #End of TX mode, go back to start of tx mode
 

@@ -159,6 +159,7 @@ while int(choice) == 2: # TX Mode
         # Go back to     while sent_size < file_size:
 
     # At this Point, the file should be either sent or too many failed attempts to send it occured
+    print(" FILE HAS FINISHED SENDING ***********************************************)
     time.sleep(1) # Pause for 1 second, go back to asking user for file to send
     #End of TX mode, go back to start of tx mode
 

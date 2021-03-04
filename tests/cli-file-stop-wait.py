@@ -94,13 +94,13 @@ while int(choice) == 2: # TX Mode
     option = input("Enter a Number: ")
     currentfile = files[int(option)-1]
     file_size = os.stat("tx_dir/" + currentfile).st_size # get file size in bytes
-    f = open("tx_dir/" + currentfile, "rb") # open file, changed to reading bytes cause sotemise its bigger
+    f = open("tx_dir/" + currentfile, "r") # open file, changed to reading bytes cause sotemise its bigger
 
     # Skip sending if there are not enough bits
     max_num_of_packets = (16**header_size) # calc maximum number of packets than can be sent, a**b =a^b
     num_of_chunks = file_size/chunk_size
     max_file_size = max_num_of_packets * chunk_size
-    file_too_big = False
+    file_too_big = packet_size_error = False
     if (num_of_chunks > max_num_of_packets):
         file_too_big = True # do not send file by skipping the next while loop
     print("It will take at least " + str(num_of_chunks) + " packets to send " + currentfile)
@@ -114,7 +114,7 @@ while int(choice) == 2: # TX Mode
         # get data from chunk of file
         print("Getting Chunk, beginning packet sending shortly ")
         data = f.read(chunk_size) # read chunk of file for data
-        data = str(data,"utf-8")
+        #data = str(data,"utf-8") # sometimes the data will exced chunk size, uncomment this to stop
         header = pkt_num[-header_size:] # get last characters from pkt-num
         tx_data = header + data # add header and data
         print("The full packet (tx_data) is: " + tx_data)
@@ -122,12 +122,16 @@ while int(choice) == 2: # TX Mode
         # Send 1 packet and check for ACK, resend if necasary
         packet = None # Clear packet in order to check for one.
         tries = 0; # clear tries for next send
-        packet = True # Uncomment to skip the following loop.
-        print("chunk size is" + str(chunk_size))
-        print("data size is " + str(len(data)))
-        print("header size is " + str(len(header)))
-        print("len(tx_data) " + str(len(tx_data)))
+        if len(tx_data) > 252: # I found that sometimes converting to bytes can actuall exceed max LoRa size of 252
+            print("Max packet size is " + str(max_pkt_size))
+            print("header size is " + str(len(header)))
+            print("Data size is " + str(len(data)))
+            print("len(tx_data) " + str(len(tx_data)))
+            packet_size_error = True
+            break # stop trying to send this file
         rfm9x.send(tx_data)
+
+        #packet = True # Uncomment to skip the following loop.
         while tries < 3 and packet is None: # try sending 3 times
             print("    Checking for ACK, pausing for 5 seconds")
             packet = rfm9x.receive(timeout = 10) # Wait for 5 seconds for receiever to request packet
@@ -176,10 +180,11 @@ while int(choice) == 2: # TX Mode
         print("ERROR: FILE TOO BIG!")
         print("File size of " + str(file_size) + " bytes")
         print("exceeds max. " + str(max_file_size) + " bytes")
+    elif packet_size_error == True:
+        print("ERROR: Converting to bytes has exceeded LoRa packet size (252), please reduce max_pkt_size to send this file")
     else:
         print(" FILE HAS FINISHED SENDING with NO ERRORS  *********************************************** ")
-
-    print("_____________________________________")
+    print("_____________________________________") # better show the restart of TX mode
     time.sleep(1) # Pause for 1 second, go back to asking user for file to send
     #End of TX mode, go back to start of tx mode
 

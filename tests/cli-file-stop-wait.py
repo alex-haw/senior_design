@@ -60,11 +60,10 @@ while int(choice) == 1: # RX Mode
     packet = rfm9x.receive(timeout=5) # wait 5 seconds for reciever timeout
     if packet is None: # idle RX mode
         print("Waiting for Packet")
-    else: # data  RX mode
-        # Parse Paket
-        while packet is not None:
+    else: # If a packet is recieved, enter data  RX mode
+        while packet is not None: # Keep going as long as packets are recieved
             packet_text = str(packet, "utf-8")
-            pkt_rec = packet_text[0:header_size] # get first two bytes for packet number
+            pkt_rec = packet_text[0:header_size] # get first two characters for packet number
             pkt_rec = int(pkt_rec,16)  # convert first two bytes to int
             packet_text = packet_text[header_size:] # get data from packet
             if pkt_rec == pkt_number:
@@ -80,12 +79,13 @@ while int(choice) == 1: # RX Mode
                 print("Requesting Next Packet")
                 time.sleep(1);
                 rfm9x.send(next_pkt_request);
-            else:
+            else: # if the recieved packet number was not what RX was expecting
                 rfm9x.send(next_pkt_request);
             packet = None
             print("Waiting for packet #" + str(pkt_number))
             packet = rfm9x.receive(timeout = 25) # wait 25 seconds before assuming the sender as quit sending
-        # End of RX mode
+        # End of while packet is none, by now the recieve has timed out
+    print("Recieved has timed out for 25 seconds \n The file has either been fully recieved or the sender stopped sending")
 
 ######### Transmit Mode
 while int(choice) == 2: # TX Mode

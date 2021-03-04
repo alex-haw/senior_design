@@ -1,4 +1,4 @@
-# send specific files over lora
+ # send specific files over lora
 # Currently working on parsing
 # Import Python System Libraries
 import time
@@ -35,7 +35,6 @@ i = 0 # variable for listing files
 receivedfile = "rfile.txt" # default file to write to
 open("rx_dir/" + receivedfile,"w").close() # open file and close to clear it when program starts
 
-pkt_num = "0x00" # packet number in hex as a string, sent as string through LoRa
 pkt_num_int = 0
 next_pkt_request = 0
 
@@ -44,7 +43,7 @@ data = None # holds data, size us up to chunk_size
 # => tx_data = header + data
 
 max_pkt_size = 250 # maximum amount of bytes that can be send in a packet, it is 251B
-header_size  =   2 # Size of header that holds packet number, 2 bytes gives up to 256 packets
+header_size  =   3 # Size of header that holds packet number, 2 bytes gives up to 256 packets
                    # each bytes gives one character for hex
 chunk_size   = max_pkt_size - header_size # chunk size in Bytes, maximum size of data
 
@@ -88,35 +87,46 @@ while int(choice) == 1: # RX Mode
 
 ######### Transmit Mode
 while int(choice) == 2: # TX Mode
-    # List Files in Transmit Directory And ask user what fil to send
-    print("The current files in tx_dir/ are:")
+    print("The current files in tx_dir/ are:") # List Files in Transmit Directory And ask user what fil to send
     for x in range(len(files)): # show all files
         print(str(x+1) + ": " + files[x])
     print("\n")
-    #currentfile = input("What file would you like to open? (include .txt)") # Aks User to Choos File
     option = input("Enter a Number: ")
     currentfile = files[int(option)-1]
     file_size = os.stat("tx_dir/" + currentfile).st_size # get file size in bytes
-    f = open("tx_dir/" + currentfile, "r") # open file
+    f = open("tx_dir/" + currentfile, "rb") # open file, changed to reading bytes cause sotemise its bigger
 
-    howmanychunks = file_size/chunk_size
-    print("It will take at least " + str(howmanychunks) + " packets to send " + currentfile)
-    sent_size = 0 # clear sent size
-    chunk_number = 1 # clear chunk number
-    pkt_num = "0x00" # start with packet number 0
+    # Skip sending if there are not enough bits
+    max_num_of_packets = (16**header_size) # calc maximum number of packets than can be sent, a**b =a^b
+    num_of_chunks = file_size/chunk_size
+    max_file_size = max_num_of_packets * chunk_size
+    file_too_big = False
+    if (num_of_chunks > max_num_of_packets):
+        file_too_big = True # do not send file by skipping the next while loop
+    print("It will take at least " + str(num_of_chunks) + " packets to send " + currentfile)
+    sent_size = 0
+    #pkt_num = "0x00"
+    pkt_num = "0" # start with packet 0
+    pkt_num = "0x" + str(pkt_num.zfill(header_size)) # force the number of digits to header size, add 0x 
+    tries = 0
 
-    while sent_size < file_size:
+    while sent_size < file_size and file_too_big == False:
         # get data from chunk of file
         print("Getting Chunk, beginning packet sending shortly ")
         data = f.read(chunk_size) # read chunk of file for data
-        header = pkt_num[-header_size:] # get last two characters from pkt-num
+        data = str(data,"utf-8")
+        header = pkt_num[-header_size:] # get last characters from pkt-num
         tx_data = header + data # add header and data
         print("The full packet (tx_data) is: " + tx_data)
         tx_data = bytes(tx_data,"utf-8")
         # Send 1 packet and check for ACK, resend if necasary
         packet = None # Clear packet in order to check for one.
         tries = 0; # clear tries for next send
-        #packet = True # Uncomment to skip the following loop.
+        packet = True # Uncomment to skip the following loop.
+        print("chunk size is" + str(chunk_size))
+        print("data size is " + str(len(data)))
+        print("header size is " + str(len(header)))
+        print("len(tx_data) " + str(len(tx_data)))
         rfm9x.send(tx_data)
         while tries < 3 and packet is None: # try sending 3 times
             print("    Checking for ACK, pausing for 5 seconds")
@@ -141,25 +151,35 @@ while int(choice) == 2: # TX Mode
         if packet is None:
             print("No acknowledge recieved, canceling send")
             break # Exits  [while sent_size < file_size:] and leads to the restart of TX mode
-
         # At this point it is assumed that the paket was correctly sent and recieved
 
         # Increment pkt_num with string format for next packet
         print("pkt_num is currently " + pkt_num[-header_size:]) # print last charaters
-        # Set up numbers for sending next packet
-        #pkt_num = hex(pkt_num)  # Convert pkt_num from string to hex
         pkt_num = int(pkt_num,16)  # Convert pkt_num from hex    to int
-        pkt_num += 1  # Incrmnt pkt_num
-        pkt_num = "0x{:02x}".format(pkt_num) # Force two hex digits, IDK how this works, found on https://stackoverflow.com/questions/11676864/how-can-i-format-an-integer-to-a-two-digit-hex
+        pkt_num += 1  # Incrment pkt_num
+        pkt_num = hex(pkt_num) # convert from int to hex
+        pkt_num = str(pkt_num) # convert to string, includes "0x"
+        pkt_num = pkt_num[2:] # get rid of "0x"
+        pkt_num = pkt_num.zfill(header_size) # fit digits to header size
+        pkt_num = "0x" + pkt_num # add 0x back
         print("pkt_num is now " + pkt_num[-header_size:] + "\n") # print last two characters (hex Digits) from pkt_num
-
+        time.sleep(2)
         # Increase sent size (assume packet was sent for now)
         sent_size = sent_size + chunk_size
         print("sent_size is now: " + str(sent_size)) 
         # Go back to     while sent_size < file_size:
 
     # At this Point, the file should be either sent or too many failed attempts to send it occured
-    print(" FILE HAS FINISHED SENDING *********************************************** ")
+    if (tries == 3):
+        print("ERROR:, too many failed attepmts to send file, the file was not fully sent")
+    elif file_too_big == True:
+        print("ERROR: FILE TOO BIG!")
+        print("File size of " + str(file_size) + " bytes")
+        print("exceeds max. " + str(max_file_size) + " bytes")
+    else:
+        print(" FILE HAS FINISHED SENDING with NO ERRORS  *********************************************** ")
+
+    print("_____________________________________")
     time.sleep(1) # Pause for 1 second, go back to asking user for file to send
     #End of TX mode, go back to start of tx mode
 

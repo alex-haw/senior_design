@@ -43,7 +43,7 @@ header = None # holds packet number, size defined by header_size
 data = None # holds data, size us up to chunk_size
 # => tx_data = header + data
 
-max_pkt_size = 4 # maximum amount of bytes that can be send in a packet, it is 251B
+max_pkt_size = 250 # maximum amount of bytes that can be send in a packet, it is 251B
 header_size  =   2 # Size of header that holds packet number, 2 bytes gives up to 256 packets
                    # each bytes gives one character for hex
 chunk_size   = max_pkt_size - header_size # chunk size in Bytes, maximum size of data
@@ -77,15 +77,14 @@ while int(choice) == 1: # RX Mode
                 next_ptk_request = str(next_pkt_request)
                 next_pkt_request = bytes(next_pkt_request,"utf-8")
                 print("Requesting Next Packet")
-                time.sleep(1);
+                #time.sleep(1);
                 rfm9x.send(next_pkt_request);
             else: # if the recieved packet number was not what RX was expecting
                 rfm9x.send(next_pkt_request);
             packet = None
             print("Waiting for packet #" + str(pkt_number))
             packet = rfm9x.receive(timeout = 25) # wait 25 seconds before assuming the sender as quit sending
-        # End of while packet is none, by now the recieve has timed out
-    print("Recieved has timed out for 25 seconds \n The file has either been fully recieved or the sender stopped sending")
+        print("Recieved has timed out for 25 seconds \n The file has either been fully recieved or the sender stopped sending")
 
 ######### Transmit Mode
 while int(choice) == 2: # TX Mode
@@ -106,19 +105,6 @@ while int(choice) == 2: # TX Mode
     chunk_number = 1 # clear chunk number
     pkt_num = "0x00" # start with packet number 0
 
-    print(" The rest of this program is under construction")
-    ############ Summary of File sending ######################
-    # Start sending packets
-    # While (sent size is less than file size)
-        # Control structure for handling single packet
-            # Listen for ACKS, resend if necacary
-            # send next packet
-        # Increment packet number
-        # Increase sent size
-    # Go back to start of TX and ask for next file to send
-    ###########################################################
-
-    # While (sent size is less than file size)
     while sent_size < file_size:
         # get data from chunk of file
         print("Getting Chunk, beginning packet sending shortly ")
@@ -177,6 +163,6 @@ while int(choice) == 2: # TX Mode
     #End of TX mode, go back to start of tx mode
 
 # End Idle Mode (optional if a break in the TX mode
-#while True:
- #    print("An ERROR has occured, please restart program ********************************************")
-  #   time.sleep(5)
+while True:
+    print("An ERROR has occured, One of the modes has been exited please restart program **************")
+    time.sleep(5)

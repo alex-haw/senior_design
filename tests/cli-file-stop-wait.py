@@ -167,7 +167,7 @@ while int(choice) == 2: # TX Mode
         pkt_num = pkt_num.zfill(header_size) # fit digits to header size
         pkt_num = "0x" + pkt_num # add 0x back
         print("pkt_num is now " + pkt_num[-header_size:] + "\n") # print last two characters (hex Digits) from pkt_num
-        time.sleep(2)
+        #time.sleep(2)
         # Increase sent size (assume packet was sent for now)
         sent_size = sent_size + chunk_size
         print("sent_size is now: " + str(sent_size)) 

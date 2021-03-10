@@ -1,3 +1,5 @@
+#!/bin/bash
+#modified from ... credit to: https://howchoo.com/g/mwnlytk3zmm/how-to-add-a-power-button-to-your-raspberry-pi
 while true; do
     read -p "This script will add sleep/wake external button capability. You must run this as root. Continue?" yn
     case $yn in

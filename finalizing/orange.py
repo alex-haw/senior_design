@@ -6,6 +6,7 @@ from PIL import Image
 from PIL import ImageDraw
 from PIL import ImageFont
 import subprocess
+import os, pwd
 #init
 RST = 24
 DC = 23
@@ -48,15 +49,25 @@ draw.rectangle((0,0,width,height), outline=0, fill=0)
 disp.clear()
 disp.display()
 
-cmd = "hostname -I | cut -d\' \' -f1"
-IP = subprocess.check_output(cmd, shell = True )
-cmd = "whoami | cut -d\' \' -f1"
-uname = subprocess.check_output(cmd, shell = True )
+#uid = pwd.getpwnam('root')[2]
+#os.seteuid(uid)
+#os.setgid(
+#cmd = "hostname -I | cut -d\' \' -f1"
+#IP = subprocess.check_output(cmd, shell = True )
+#cmd = "whoami | cut -d\' \' -f1"
+#uname = subprocess.check_output(cmd, shell = True )
 cmd = "hostname | cut -d\' \' -f1"
 hostnm = subprocess.check_output(cmd, shell = True)
+hostnm = str(hostnm,'utf-8').strip('\n')
+#print(hostnm)
 #print(IP)
 #print(uname)
 
-draw.text((6, 0),       'host: ' + str(hostnm, 'utf-8') + 'user: ' + str(uname,'utf-8') + 'addr: ' + str(IP,'utf-8').strip('\n') + ' ',  font=font, fill=255)
+#draw.text((6, 0),       'host: ' + str(hostnm, 'utf-8') + 'user: ' + str(uname,'utf-8') + 'addr: ' + str(IP,'utf-8').strip('\n') + ' ',  font=font, fill=255)
+if hostnm =='Pi0':
+	draw.text((6, 0),       'host: Pi0\nuser: pi\naddr: 131.212.124.186',  font=font, fill=255)
+else:
+	draw.text((6, 0),       'host: Pi1\nuser: pi\naddr: ...............',  font=font, fill=255)
+
 disp.image(image)
 disp.display()

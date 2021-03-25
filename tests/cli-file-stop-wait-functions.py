@@ -49,7 +49,8 @@ chunk_size   = max_pkt_size - header_size # chunk size in Bytes, maximum size of
 file_too_big = False
 packet_size_error = False
 too_many_tries = False
-
+#sent_size = 0
+file_size = 0
 # variables for RX mode (moved to start of RX mode)
 #next_pkt_request = 0 # Changed to strings to use functions
 #next_pkt_request = "0" # start with packet 0
@@ -87,6 +88,7 @@ def checkFileStats(file_name): # Makes Sure files are smoll enough, sets file_to
     time.sleep(4) # Give user 4 seconds to see if the file will take too long to send
 
 def sendFile(file_name):
+    global sent_size
     while sent_size < file_size and file_too_big == False and too_many_tries == False:
         print("Getting Chunk, beginning packet sending shortly ")
         data = f.read(chunk_size) # read chunk of file for data
@@ -113,6 +115,7 @@ def sendFile(file_name):
         # Go back to     while sent_size < file_size:
 
 def sendPacketForFile():
+    global tries
     # Send 1 packet and check for ACK, resend if necasary
     packet = None # Clear packet in order to check for one.
     tries = 0; # clear tries for next send
@@ -197,10 +200,11 @@ while int(choice) == 2: # TX Mode
     f = open("tx_dir/" + currentfile, "r") # open file, changed to reading bytes cause sotemise its bigger
 
     sent_size = 0 # Clear sent size before sending file
-    pkt_num = "0" # start with packet 0
-    pkt_num = "0x" + str(pkt_num.zfill(pkt_num_size)) # force the number of digits to header size, add 0x 
-    pkt_size_error = False
-    
+    #pkt_num = "0" # start with packet 0
+    #pkt_num = "0x" + str(pkt_num.zfill(pkt_num_size)) # force the number of digits to header size, add 0x 
+    #pkt_size_error = False
+    pkt_num = "0x00"
+    tries = 3
     sendFile(currentfile)
     # At this Point, the file should be either sent or too many failed attempts to send it occured
     if (tries == 3):

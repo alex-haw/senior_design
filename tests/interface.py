@@ -203,13 +203,13 @@ def tx_func(request):
     time.sleep(1)  # Pause for 1 second, go back to asking user for file to send
     # End of TX mode, go back to start of tx mode
 
-def TX_filenames():
-    fnames = str("00")
+while True:
+    fnames = str()
     for x in range(len(files)):  # show all files
         fnames += files[x] + "\n"
     fnames = bytes(fnames,"utf-8")
     rfm9x.send(fnames)
-    #top_packet = rfm9x.receive(timeout=1)
+    top_packet = rfm9x.receive(timeout=1)
 
     if top_packet is not None:
         top_packet = str(top_packet,"utf-8")

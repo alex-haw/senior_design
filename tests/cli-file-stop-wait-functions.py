@@ -7,7 +7,7 @@ import time
 import busio
 from digitalio import DigitalInOut, Direction, Pull
 import board
-
+import math
 # Import RFM9x
 import adafruit_rfm9x
 import os
@@ -56,7 +56,10 @@ file_size = 0
 #next_pkt_request = "0" # start with packet 0
 #next_pkt_request = "0x" + str(next_pkt_request.zfill(header_size)) # force the number of digits to header size, add 0x 
 
-# Function Declarations:
+#########################################################################################################################
+########################################### Function Declarations #######################################################
+#########################################################################################################################
+# TX FUNCTIONS
 def incPktNum(pkt_num): # increment packet num from string back to string ( "0x00" -> "0x01") 
     pkt_num = int(pkt_num,16)  # Convert pkt_num from hex    to int
     pkt_num += 1  # Incrment pkt_num
@@ -67,43 +70,53 @@ def incPktNum(pkt_num): # increment packet num from string back to string ( "0x0
     pkt_num = "0x" + pkt_num # add 0x back
     return pkt_num
 
-def askUserWhatFileToSend():
-    print("The current files in tx_dir/ are:") # List Files in Transmit Directory And ask user what fil to send
-    for x in range(len(files)): # show all files
-        print(str(x+1) + ": " + files[x])
-    print("\n")
-    option = input("Enter a Number: ")
-    currentfile = files[int(option)-1]
-    return currentfile
+def ask_user_what_file_to_send(): # Function returns a file name selected by the user
+    file_too_big = True # set to true so that it does the loop at least once
+    while file_too_big == True:
+        print("The current files in tx_dir/ are:") # List Files in Transmit Directory And ask user what fil to send
+        for x in range(len(files)): # show all files
+            print(str(x+1) + ": " + files[x])
+        print("\n")
+        option = input("Enter a Number: ")
+        selected_file = files[int(option)-1]
+        file_too_big, file_size =  check_file_size(selected_file) # See if file is too big
+        #file_too_big = True
+    print(" you have selected" + selected_file)
+    return selected_file, file_too_big, file_size
 
-def checkFileStats(file_name): # Makes Sure files are smoll enough, sets file_too_big 
-    file_size = os.stat("tx_dir/" + currentfile).st_size # get file size in bytes
+def check_file_size(file_name): # Makes Sure files are smoll enough, sets file_too_big
+    file_too_big = False
+    file_size = os.stat("tx_dir/" + file_name).st_size # get file size in bytes
     max_num_of_packets = (16**pkt_num_size) # calc maximum number of packets than can be sent, a**b =a^b
     num_of_chunks = file_size/chunk_size
     max_file_size = max_num_of_packets * chunk_size
     file_too_big = packet_size_error = False # Errors for if the file is too big, and if packets are too big
     if (num_of_chunks > max_num_of_packets): # If the amount of packets exceeds pkt_num range
         file_too_big = True # do not send file by skipping the next while loop
-    print("It will take at least " + str(num_of_chunks) + " packets to send " + currentfile)
-    time.sleep(4) # Give user 4 seconds to see if the file will take too long to send
+    print("It will take at least " + str(math.ceil(num_of_chunks)) + " packets to send " + file_name) # rounds up
+    print("Pausing for 2 seconds...")
+    time.sleep(2) # Give user 4 seconds to see if the file will take too long to send
+    return file_too_big, file_size
 
-def sendFile(file_name):
-    global sent_size
+def send_file(file_name, file_too_big, file_size): # handels all aspects of sending an entire file
+    print("START OF SEND_FILE")
+    f = open("tx_dir/" + currentfile, "r") # open file, changed to reading bytes cause sotemise its bigger
+    sent_size = 0 # clear sent_size for new file
+    pkt_num = "0x00"
+    routing_flags = "0x000"
+    too_many_tries = False
+    packet_size_error = False
+
     while sent_size < file_size and file_too_big == False and too_many_tries == False:
         print("Getting Chunk, beginning packet sending shortly ")
         data = f.read(chunk_size) # read chunk of file for data
-        #data = str(data,"utf-8") # sometimes the data will exced chunk size, uncomment this to stop
-        routing_flags = "0x000"
-        #pkt_num don't know yet
         header = pkt_num[-header_size:] # get last characters from pkt-num
         tx_data = header + data # add header and data
         print("The full packet (tx_data) is: " + tx_data)
         tx_data = bytes(tx_data,"utf-8") # format data for packet
-
-        if sendPacketForFile>=3: # if more than 3 tries occured for sedning a packet
-            print("No acknowledge received, canceling send")
-            too_many_tries = True # Variable to cancel send
-        # At this point it is assumed that the paket was correctly sent and recieved
+        too_many_tries, packet_size_error = sendPacketForFile(tx_data, pkt_num)
+        if too_many_tries:
+            print("No ACK, too many failed attempt to send a packet")
 
         # Increment pkt_num with string format for next packet
         print("pkt_num is currently " + pkt_num[-header_size:]) # print last charaters
@@ -113,20 +126,23 @@ def sendFile(file_name):
         # Increase sent size (assume packet was sent for now)
         sent_size = sent_size + chunk_size # print("sent_size is now: " + str(sent_size)) 
         # Go back to     while sent_size < file_size:
+    print("END OF SEND_FILE")
+    return too_many_tries, packet_size_error
 
-def sendPacketForFile():
-    global tries
-    # Send 1 packet and check for ACK, resend if necasary
+def sendPacketForFile(tx_data, pkt_num): # Send 1 packet and check for ACK, resend if necasary
+    print("	START OF SENDPACKETFORFILE")
+    packet_size_error = False
+    too_many_tries = False
     packet = None # Clear packet in order to check for one.
     tries = 0; # clear tries for next send
     if len(tx_data) > 252: # If a Unicode character is encountered, it might not fit into a byte
-        packet_size_error = True
-        #break # stop trying to send this file
-    rfm9x.send(tx_data)
-    packet = True # Uncomment to skip the following loop.
+        packet_size_error = True # Stop sending the file
+
+    #packet = True # Uncomment to skip the following loop.
+    rfm9x.send(tx_data) # Send data
     while tries < 3 and packet is None and packet_size_error == False: # try sending 3 times
         print("    Checking for ACK, pausing for 5 seconds")
-        packet = rfm9x.receive(timeout = 10) # Wait for 5 seconds for receiever to request packet
+        packet = rfm9x.receive(timeout = 5) # Wait for 5 seconds for receiever to request packet
         if packet is None: # If no packet received
             print("No ACK, Resending packet number " + pkt_num)
             rfm9x.send(tx_data) # send packet again
@@ -142,15 +158,18 @@ def sendPacketForFile():
             else: # If the packet is not equal to pkt_num, assume receiver wants next packet for now
                 continue # do nothing
             # go back to start of try sending 3 times unless the packet =/= pkt_num
-        return tries
-        #if tries >= 3: # If no ACK is recieved from reciever after 3 attempts
-        #    print("No acknowledge recieved, canceling send")
-        #    break # Exits  [while sent_size < file_size:] and leads to the restart of TX mode
-    # At this point it is assumed that the paket was correctly sent and recieved
+    print("	END OF SENDPACKTEFORFILE")
+    return tries, packet_size_error
+    # at this point, the function has ceased trying to send a packet, wether there was an error or not
+
+# RX FUNCTIONS
+def idle_XR():
 
 
 
-
+#########################################################################################################################
+########################################### Start of Top Interface ######################################################
+#########################################################################################################################
 print("Please Choose a Mode: \n RX=1\n TX=2\n")
 choice = input("Enter Number:")
 
@@ -195,30 +214,21 @@ while int(choice) == 1: # RX Mode
 
 ######### Transmit Mode
 while int(choice) == 2: # TX Mode
-    currentfile = askUserWhatFileToSend() # Function to display and prompt for files
-    checkFileStats(currentfile) # Skips sending if there are not enough bits for size of file, sets file_too_big
-    f = open("tx_dir/" + currentfile, "r") # open file, changed to reading bytes cause sotemise its bigger
+    current_file, file_too_big, file_size = ask_user_what_file_to_send() # Returns selected_file name and file_too_big
+    too_many_tries = send_file(current_file,file_too_big,file_size) # Sends file, returns True if too many attempts occured
 
-    sent_size = 0 # Clear sent size before sending file
-    #pkt_num = "0" # start with packet 0
-    #pkt_num = "0x" + str(pkt_num.zfill(pkt_num_size)) # force the number of digits to header size, add 0x 
-    #pkt_size_error = False
-    pkt_num = "0x00"
-    tries = 3
-    sendFile(currentfile)
-    # At this Point, the file should be either sent or too many failed attempts to send it occured
-    if (tries == 3):
+    if too_many_tries:
         print("ERROR:, too many failed attepmts to send file, the file was not fully sent")
-    elif file_too_big == True:
+    elif file_too_big:
         print("ERROR: FILE TOO BIG! File size of " + str(file_size) + " exceeds "+ str(max_file_size) + " byte max")
-    elif packet_size_error == True:
+    elif packet_size_error:
         print("ERROR: too many bytes, please reduce max_pkt_size to send this file or remove Unicode characters")
-    else: # if no errors
+    else: # if no error
         print(" FILE HAS FINISHED SENDING with NO ERRORS  *********************************************** ")
     print(    "__________END OF FILE SENDING___________________________") # better show the restart of TX mode
     time.sleep(1) # Pause for 1 second, go back to asking user for file to send
     #End of TX mode, go back to start of tx mode
 
-while True: # End Idle Mode (optional if a break in the TX mode
+while True: # End Idle Mode (optional if a break in the TX mode)
     print("An ERROR has occured, One of the modes has been exited please restart program")
     time.sleep(5)

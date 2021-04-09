@@ -1,5 +1,5 @@
 # this is a modified version of cli-file-stop-wait.py that is broken into functions. 
- # send specific files over lora
+# send specific files over lora
 # Currently working on parsing
 # Import Python System Libraries
 import time
@@ -51,14 +51,8 @@ packet_size_error = False
 too_many_tries = False
 #sent_size = 0
 file_size = 0
-# variables for RX mode (moved to start of RX mode)
-#next_pkt_request = 0 # Changed to strings to use functions
-#next_pkt_request = "0" # start with packet 0
-#next_pkt_request = "0x" + str(next_pkt_request.zfill(header_size)) # force the number of digits to header size, add 0x 
 
-#########################################################################################################################
 ########################################### Function Declarations #######################################################
-#########################################################################################################################
 # TX FUNCTIONS
 def incPktNum(pkt_num): # increment packet num from string back to string ( "0x00" -> "0x01") 
     pkt_num = int(pkt_num,16)  # Convert pkt_num from hex    to int
@@ -102,8 +96,7 @@ def send_file(file_name, file_too_big, file_size): # handels all aspects of send
     print("START OF SEND_FILE")
     f = open("tx_dir/" + currentfile, "r") # open file, changed to reading bytes cause sotemise its bigger
     sent_size = 0 # clear sent_size for new file
-    pkt_num = "0x00"
-    routing_flags = "0x000"
+    pkt_num = "0x01"
     too_many_tries = False
     packet_size_error = False
 
@@ -126,6 +119,10 @@ def send_file(file_name, file_too_big, file_size): # handels all aspects of send
         # Increase sent size (assume packet was sent for now)
         sent_size = sent_size + chunk_size # print("sent_size is now: " + str(sent_size)) 
         # Go back to     while sent_size < file_size:
+    if sent_size >= file_size:
+        tx_data = pkt_num = "0x00"
+        tx_data = bytes(tx_data,"utf-8") # format data for packet
+        sendPacketForFile(tx_data, pkt_num)
     print("END OF SEND_FILE")
     return too_many_tries, packet_size_error
 
@@ -158,65 +155,14 @@ def sendPacketForFile(tx_data, pkt_num): # Send 1 packet and check for ACK, rese
             else: # If the packet is not equal to pkt_num, assume receiver wants next packet for now
                 continue # do nothing
             # go back to start of try sending 3 times unless the packet =/= pkt_num
+    if tries >= 3:
+        too_many_tries = True
+        print("Too Many Tries")
     print("	END OF SENDPACKTEFORFILE")
-    return tries, packet_size_error
+    return too_many_tries, packet_size_error
     # at this point, the function has ceased trying to send a packet, wether there was an error or not
 
-# RX FUNCTIONS
-def idle_XR():
-
-
-
-#########################################################################################################################
-########################################### Start of Top Interface ######################################################
-#########################################################################################################################
-print("Please Choose a Mode: \n RX=1\n TX=2\n")
-choice = input("Enter Number:")
-
-while int(choice) == 1: # RX Mode
-    w = open("rx_dir/" + receivedfile, "a")
-    pkt_number = "0" # start with packet 0
-    pkt_number = "0x" + str(pkt_number.zfill(header_size)) # force the number of digits to header size, add 0x
-    next_pkt_request = "0" # start expecting with packet 0
-    next_pkt_request = "0x" + str(next_pkt_request.zfill(header_size)) # force the number of digits to header size, add 0x 
-    packet = None
-    print("Waiting to recieve for 5 seconds")
-    packet = rfm9x.receive(timeout=5) # wait 5 seconds for reciever timeout
-    if packet is None: # idle RX mode
-        print("Waiting for Packet")
-    else: # If a packet is recieved, enter data  RX mode
-        # try: # Try to recieve unless there is an error at any point in the rest of this try portion, ignore for now
-        while packet is not None: # Keep going as long as packets are recieved
-            packet_text = str(packet, "utf-8") # get string from packet
-            pkt_num_rec = packet_text[0:header_size] # get first two characters for packet number
-            pkt_num_rec = int(pkt_num_rec,16)  # convert first two bytes to int from recieved pkt
-            packet_text = packet_text[header_size:] # get data from packet
-            if pkt_num_rec == pkt_number[2:]: # compare hex digits to the pkt_number without "0x"
-                # Write data to file
-                print("Recieved Packet number: " + str(pkt_rec) + " Writing to " + receivedfile + " now")
-                w.write(packet_text)
-                # Request Next Packet, commneted old code in favor of using incPktNum function #pkt_number += 1
-                #next_pkt_request = pkt_rec + 1 # integer #next_pkt_request = hex(next_pkt_request) #next_ptk_request = str(next_pkt_request)
-                next_pkt_request = incPktNum(pkt_number) # increment packet number
-                next_pkt_request = bytes(next_pkt_request,"utf-8") #convert next_pkt_request to bytes
-                print("Requesting Next Packet")
-                #time.sleep(1); # removed this sleep to make it faster, still sends large files when commented
-                rfm9x.send(next_pkt_request)
-            else: # if the recieved packet number was not what RX was expecting
-                rfm9x.send(bytes(next_pkt_request[2:],"utf-8")) # request the next packet from hex digits only
-            packet = None
-            print("Waiting for packet #" + str(pkt_number))
-            packet = rfm9x.receive(timeout = 25) # wait 25 seconds before assuming the sender as quit sending
-        #except UnicodeDecodeError: #Ignore for now
-            # print("Packet Error: UnicodeDecodeError, skipping")
-            # request next packet incase we missed one
-        print("Recieved has timed out for 25 seconds \n The file has either been fully recieved or the sender stopped sending")
-
-######### Transmit Mode
-while int(choice) == 2: # TX Mode
-    current_file, file_too_big, file_size = ask_user_what_file_to_send() # Returns selected_file name and file_too_big
-    too_many_tries = send_file(current_file,file_too_big,file_size) # Sends file, returns True if too many attempts occured
-
+def TX_errors(too_many_tries,file_too_big,packet_size_error): # prints errors
     if too_many_tries:
         print("ERROR:, too many failed attepmts to send file, the file was not fully sent")
     elif file_too_big:
@@ -225,9 +171,86 @@ while int(choice) == 2: # TX Mode
         print("ERROR: too many bytes, please reduce max_pkt_size to send this file or remove Unicode characters")
     else: # if no error
         print(" FILE HAS FINISHED SENDING with NO ERRORS  *********************************************** ")
+
+# RX Functions
+def receive_a_file():
+    received = False
+    w = open("rx_dir/" + receivedfile, "a")
+    pkt_num = "0x01" # start with packet number zero
+    next_pkt_num_request = "0x01" # start with zero
+    wait = True
+    packet = idle_RX(wait)
+    if packet is None:
+        print("no packet received")
+    else: # If a packet is recieved, enter data  RX mode
+        valid_pkt = check_rec_pkt(packet)
+        if valid_pkt:
+            # try: # Try to recieve unless there is an error at any point in the rest of this try portion, ignore for now
+            pkt_num, received = keep_receiving_packets(packet,file,pkt_num) # functions
+            print("Recieved has timed out for 25 seconds \n The file has either been fully recieved or the sender stopped sending")
+            if received:
+                print("The file was received with no errors")
+            else:
+                print("The file was not fully recieved")
+        else:
+            print("An invalid packet was received and will be ignored")
+    print("END OF RECIEVEAFILE")
+    return received
+
+def check_rec_pkt(rec_pkt):
+    valid = True # asume it is valid for now
+    # convert to string
+    # get flags
+    # if flags do not match destination
+    return valid
+
+def keep_receiving_packets(packet,file,pkt_num):
+    while packet is not None: # Keep going as long as packets are recieved
+        packet_text = str(packet, "utf-8") # get string from packet
+        pkt_num_rec = packet_text[0:2] # get first two characters for packet number
+        pkt_num_rec = int(pkt_num_rec,16)  # convert first two bytes to int from recieved pkt
+        packet_text = packet_text[2:] # get data from packet
+        if pkt_num_rec == pkt_num[2:]: # compare hex digits to the pkt_number without "0x"
+            print("Recieved Packet number: " + str(pkt_rec) + " Writing to " + receivedfile + " now")
+            file.write(packet_text)
+            next_pkt_request = incPktNum(pkt_num) # get next packet number
+            next_pkt_request = bytes(next_pkt_request,"utf-8") #convert next_pkt_request to bytes
+            print("Requesting Next Packet")
+            rfm9x.send(next_pkt_request)
+        elif pkt_num_rec == "00":
+            received = True
+            # close file
+        else: # if the recieved packet number was not what RX was expecting
+            rfm9x.send(bytes(next_pkt_request[2:],"utf-8")) # request the next packet from hex digits only
+        packet = None
+        print("Waiting for packet #" + str(pkt_number))
+        packet = rfm9x.receive(timeout = 25) # wait 25 seconds before assuming the sender as quit sending
+    return pkt_num, received
+
+def idle_RX(wait): # receives a packet, either once or forever
+    if wait == True: # wait until a packet is received
+        packet = None
+        while packet is None:
+            print("Waiting for packet for 5 seconds")
+            packet = rfm9x.receive(timeout = 5) #
+    else: 
+        packet = rfm9x.receive(timeou = 5) # wait for 5 seconds
+    return packet
+
+########################################### Start of Top Interface ######################################################
+print("Please Choose a Mode: \n RX=1\n TX=2\n")
+choice = input("Enter Number:")
+
+while int(choice) == 1: # RX mode
+    receive_a_file() # waits for a packet and then decides whether or not to write packet to file
+    print("END OF RX MODE")
+
+while int(choice) == 2: # TX Mode
+    current_file, file_too_big, file_size = ask_user_what_file_to_send() # Returns selected_file name and file_too_big
+    too_many_tries = send_file(current_file,file_too_big,file_size) # Sends file, returns True if too many attempts occured
+    TX_errors(too_many_tries,file_too_big,packet_size_error) # display errors
     print(    "__________END OF FILE SENDING___________________________") # better show the restart of TX mode
     time.sleep(1) # Pause for 1 second, go back to asking user for file to send
-    #End of TX mode, go back to start of tx mode
 
 while True: # End Idle Mode (optional if a break in the TX mode)
     print("An ERROR has occured, One of the modes has been exited please restart program")

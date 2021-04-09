@@ -110,7 +110,7 @@ def send_file(file_name, file_too_big, file_size): # handels all aspects of send
         too_many_tries, packet_size_error = sendPacketForFile(tx_data, pkt_num)
         if too_many_tries:
             print("No ACK, too many failed attempt to send a packet")
-
+            break
         # Increment pkt_num with string format for next packet
         print("pkt_num is currently " + pkt_num[-header_size:]) # print last charaters
         pkt_num = incPktNum(pkt_num) # takes string, adds one, converts pack to string
@@ -157,8 +157,6 @@ def sendPacketForFile(tx_data, pkt_num): # Send 1 packet and check for ACK, rese
             # go back to start of try sending 3 times unless the packet =/= pkt_num
     if tries >= 3:
         too_many_tries = True
-        print("Too Many Tries")
-    print("	END OF SENDPACKTEFORFILE")
     return too_many_tries, packet_size_error
     # at this point, the function has ceased trying to send a packet, wether there was an error or not
 
@@ -175,13 +173,14 @@ def TX_errors(too_many_tries,file_too_big,packet_size_error): # prints errors
 # RX Functions
 def receive_a_file():
     received = False
-    w = open("rx_dir/" + receivedfile, "a")
+    file = open("rx_dir/" + receivedfile, "a")
     pkt_num = "0x01" # start with packet number zero
     next_pkt_num_request = "0x01" # start with zero
-    wait = True
+    wait = True # If wait is true then idle_RX waits forever until a packet is recieved
+    #wait = False
     packet = idle_RX(wait)
     if packet is None:
-        print("no packet received")
+        print("    No packet received")
     else: # If a packet is recieved, enter data  RX mode
         valid_pkt = check_rec_pkt(packet)
         if valid_pkt:
@@ -194,7 +193,6 @@ def receive_a_file():
                 print("The file was not fully recieved")
         else:
             print("An invalid packet was received and will be ignored")
-    print("END OF RECIEVEAFILE")
     return received
 
 def check_rec_pkt(rec_pkt):
@@ -234,7 +232,8 @@ def idle_RX(wait): # receives a packet, either once or forever
             print("Waiting for packet for 5 seconds")
             packet = rfm9x.receive(timeout = 5) #
     else: 
-        packet = rfm9x.receive(timeou = 5) # wait for 5 seconds
+        print("Waiting for packet for 5 seconds")
+        packet = rfm9x.receive(timeout = 5) # wait for 5 seconds
     return packet
 
 ########################################### Start of Top Interface ######################################################

@@ -76,12 +76,13 @@ def request(file_choice, source_addr): # RX Mode
         print("Waiting for Packet")
     else: # If a packet is recieved, enter data  RX mode
         # try: # Try to recieve unless there is an error at any point in the rest of this try portion, ignore for now
-        while packet is not None: # Keep going as long as packets are recieved
+        pkt_num_rec = ""
+        while pkt_num_rec != "ff": # Keep going as long as packets are recieved
             packet_text = str(packet, "utf-8") # get string from packet
             pkt_num_rec = packet_text[3:5] # get first two characters for packet number
             pkt_num_rec = int(pkt_num_rec,16)  # convert first two bytes to int from recieved pkt
             packet_text = packet_text[header_size:] # get data from packet
-            if pkt_num_rec == pkt_number[2:]: # compare hex digits to the pkt_number without "0x"
+            if pkt_num_rec == pkt_number[2:] or pkt_num_rec == "ff": # compare hex digits to the pkt_number without "0x"
                 # Write data to file
                 print("Recieved Packet number: " + str(pkt_rec) + " Writing to " + receivedfile + " now")
                 w.write(packet_text)
@@ -126,6 +127,8 @@ def sendFile(pkt_rec, source_addr): # TX Mode
         print("Getting Chunk, beginning packet sending shortly ")
         data = f.read(chunk_size) # read chunk of file for data
         #data = str(data,"utf-8") # sometimes the data will exced chunk size, uncomment this to stop
+        if len(data) < chunk_size:
+            pkt_num = "ff"
         header = "3" + source_addr + node_num + pkt_num[-header_size:] # get last characters from pkt-num
         tx_data = header + data # add header and data
         print("The full packet (tx_data) is: " + tx_data)

@@ -71,7 +71,7 @@ while int(choice) == 1: # RX Mode
     #next_pkt_request = "0" # start expecting with packet 0
     #next_pkt_request = "0x" + str(next_pkt_request.zfill(header_size)) # force the number of digits to header size, add 0x 
     pkt_number = "0x00"
-    pkt_number = "0x00"
+    next_pkt_request = "0x00"
 
     packet = None
     print("Waiting to recieve for 5 seconds")
@@ -159,8 +159,9 @@ while int(choice) == 2: # TX Mode
             else: # IF a packet is received
                 packet_txt = str(packet,"utf-8") #convert packet to string, should have two characters
                 print("Ack Received")
-                if packet_txt == pkt_num[-header_size:]: # if the received packet is equal to packet_num
+                if packet_txt == pkt_num[2:]: # if the received packet is equal to packet_num
                     print("Error in received pkt, resending")
+                    print("The packet is: " + packet_txt + " and pkt_num[2:] is: ")
                     rfm9x.send(tx_data) # send packet gain
                     tries += 1
                     packet = None # empty packet to start try loop again

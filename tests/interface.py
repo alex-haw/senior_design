@@ -95,9 +95,6 @@ def request(file_choice, source_addr): # RX Mode
                 rfm9x.send(next_pkt_request)
             else: # if the recieved packet number was not what RX was expecting
                 rfm9x.send(bytes(next_pkt_request[2:],"utf-8")) # request the next packet from hex digits only
-            packet = None
-            print("Waiting for packet #" + str(pkt_number))
-            packet = rfm9x.receive(timeout = 25) # wait 25 seconds before assuming the sender as quit sending
         #except UnicodeDecodeError: #Ignore for now
             # print("Packet Error: UnicodeDecodeError, skipping")
             # request next packet incase we missed one

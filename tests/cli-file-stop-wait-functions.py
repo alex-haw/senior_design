@@ -37,7 +37,7 @@ receivedfile = "rfile.txt" # default file to write to
 open("rx_dir/" + receivedfile,"w").close() # open file and close to clear it when program starts
 
 # Global variable declarations
-header = None # holds packet number, size defined by header_size  
+header = "" # holds packet number, size defined by header_size  
 data = None # holds data, size us up to chunk_size
 routing_flags = "0x000"
 pkt_num = "0x00"
@@ -96,14 +96,14 @@ def send_file(file_name, file_too_big, file_size): # handels all aspects of send
     print("START OF SEND_FILE")
     f = open("tx_dir/" + currentfile, "r") # open file, changed to reading bytes cause sotemise its bigger
     sent_size = 0 # clear sent_size for new file
-    pkt_num = "0x01"
+    pkt_num = "0x00"
     too_many_tries = False
     packet_size_error = False
 
     while sent_size < file_size and file_too_big == False and too_many_tries == False:
         print("Getting Chunk, beginning packet sending shortly ")
         data = f.read(chunk_size) # read chunk of file for data
-        header = pkt_num[-header_size:] # get last characters from pkt-num
+        header = pkt_num[2:]
         tx_data = header + data # add header and data
         print("The full packet (tx_data) is: " + tx_data)
         tx_data = bytes(tx_data,"utf-8") # format data for packet
@@ -174,7 +174,7 @@ def TX_errors(too_many_tries,file_too_big,packet_size_error): # prints errors
 def receive_a_file():
     received = False
     file = open("rx_dir/" + receivedfile, "a")
-    pkt_num = "0x01" # start with packet number zero
+    pkt_num = "0x00" # start with packet number zero
     next_pkt_num_request = "0x01" # start with zero
     wait = True # If wait is true then idle_RX waits forever until a packet is recieved
     #wait = False
@@ -205,6 +205,7 @@ def check_rec_pkt(rec_pkt):
 def keep_receiving_packets(packet,file,pkt_num):
     while packet is not None: # Keep going as long as packets are recieved
         packet_text = str(packet, "utf-8") # get string from packet
+        print(packet_text)
         pkt_num_rec = packet_text[0:2] # get first two characters for packet number
         pkt_num_rec = int(pkt_num_rec,16)  # convert first two bytes to int from recieved pkt
         packet_text = packet_text[2:] # get data from packet
@@ -215,11 +216,11 @@ def keep_receiving_packets(packet,file,pkt_num):
             next_pkt_request = bytes(next_pkt_request,"utf-8") #convert next_pkt_request to bytes
             print("Requesting Next Packet")
             rfm9x.send(next_pkt_request)
-        elif pkt_num_rec == "00":
+        elif pkt_num_rec == "ff":
             received = True
             # close file
         else: # if the recieved packet number was not what RX was expecting
-            rfm9x.send(bytes(next_pkt_request[2:],"utf-8")) # request the next packet from hex digits only
+            rfm9x.send(bytes(pkt_num,"utf-8")) # request the next packet from hex digits only
         packet = None
         print("Waiting for packet #" + str(pkt_number))
         packet = rfm9x.receive(timeout = 25) # wait 25 seconds before assuming the sender as quit sending

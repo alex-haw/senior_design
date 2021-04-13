@@ -63,6 +63,8 @@ def incPktNum(pkt_num): # increment packet num from string back to string ( "0x0
 
 def request(file_choice, source_addr): # RX Mode
     w = open("rx_dir/" + file_choice, "a")
+    print("sending routing number")
+    rfm9x.send(bytes("1"+ source_addr + node_num + "00","utf-8"))
     pkt_number = "0" # start with packet 0
     pkt_number = "0x" + str(pkt_number.zfill(header_size)) # force the number of digits to header size, add 0x
     next_pkt_request = "0" # start expecting with packet 0

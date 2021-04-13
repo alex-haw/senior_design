@@ -222,7 +222,7 @@ def keep_receiving_packets(packet,file,pkt_num):
         else: # if the recieved packet number was not what RX was expecting
             rfm9x.send(bytes(pkt_num,"utf-8")) # request the next packet from hex digits only
         packet = None
-        print("Waiting for packet #" + str(pkt_number))
+        print("Waiting for packet #" + str(pkt_num))
         packet = rfm9x.receive(timeout = 25) # wait 25 seconds before assuming the sender as quit sending
     return pkt_num, received
 

@@ -6,6 +6,7 @@ import time
 import busio
 from digitalio import DigitalInOut, Direction, Pull
 import board
+import math
 
 # Import RFM9x
 import adafruit_rfm9x
@@ -40,7 +41,7 @@ data = None # holds data, size us up to chunk_size
 # => tx_data = header + data
 
 max_pkt_size = 250 # maximum amount of bytes that can be send in a packet, it is 251B
-header_size  =   3 # Size of header that holds packet number, 2 bytes gives up to 256 packets
+header_size  =   2 # Size of header that holds packet number, 2 bytes gives up to 256 packets
                    # each bytes gives one character for hex
 chunk_size   = max_pkt_size - header_size # chunk size in Bytes, maximum size of data
 
@@ -65,10 +66,13 @@ choice = input("Enter Number:")
 
 while int(choice) == 1: # RX Mode
     w = open("rx_dir/" + receivedfile, "a")
-    pkt_number = "0" # start with packet 0
-    pkt_number = "0x" + str(pkt_number.zfill(header_size)) # force the number of digits to header size, add 0x
-    next_pkt_request = "0" # start expecting with packet 0
-    next_pkt_request = "0x" + str(next_pkt_request.zfill(header_size)) # force the number of digits to header size, add 0x 
+    #pkt_number = "0" # start with packet 0
+    #pkt_number = "0x" + str(pkt_number.zfill(header_size)) # force the number of digits to header size, add 0x
+    #next_pkt_request = "0" # start expecting with packet 0
+    #next_pkt_request = "0x" + str(next_pkt_request.zfill(header_size)) # force the number of digits to header size, add 0x 
+    pkt_number = "0x00"
+    pkt_number = "0x00"
+
     packet = None
     print("Waiting to recieve for 5 seconds")
     packet = rfm9x.receive(timeout=5) # wait 5 seconds for reciever timeout
@@ -78,15 +82,15 @@ while int(choice) == 1: # RX Mode
         # try: # Try to recieve unless there is an error at any point in the rest of this try portion, ignore for now
         while packet is not None: # Keep going as long as packets are recieved
             packet_text = str(packet, "utf-8") # get string from packet
-            pkt_num_rec = packet_text[0:header_size] # get first two characters for packet number
+            #pkt_num_rec = packet_text[0:header_size] # get first two characters for packet number
+            pkt_num_rec = packet_text[0:2]
             pkt_num_rec = int(pkt_num_rec,16)  # convert first two bytes to int from recieved pkt
-            packet_text = packet_text[header_size:] # get data from packet
+            #packet_text = packet_text[header_size:] # get data from packet
+            packet_text = packet_text[2:]
             if pkt_num_rec == pkt_number[2:]: # compare hex digits to the pkt_number without "0x"
-                # Write data to file
                 print("Recieved Packet number: " + str(pkt_rec) + " Writing to " + receivedfile + " now")
                 w.write(packet_text)
                 # Request Next Packet, commneted old code in favor of using incPktNum function #pkt_number += 1
-                #next_pkt_request = pkt_rec + 1 # integer #next_pkt_request = hex(next_pkt_request) #next_ptk_request = str(next_pkt_request)
                 next_pkt_request = incPktNum(pkt_number) # increment packet number
                 next_pkt_request = bytes(next_pkt_request,"utf-8") #convert next_pkt_request to bytes
                 print("Requesting Next Packet")
@@ -120,18 +124,19 @@ while int(choice) == 2: # TX Mode
     file_too_big = packet_size_error = False # Errors for if the file is too big, and if packets are too big
     if (num_of_chunks > max_num_of_packets): # If the amount of packets exceeds pkt_num range
         file_too_big = True # do not send file by skipping the next while loop
-    print("It will take at least " + str(num_of_chunks) + " packets to send " + currentfile)
-    time.sleep(4) # Give user 4 seconds to see if the file will take too long to send
+    print("It will take at least " + str(math.ceil(num_of_chunks)) + " packets to send " + currentfile)
+    time.sleep(2) # Give user 4 seconds to see if the file will take too long to send
 
     sent_size = 0 # Clear sent size before sending file
-    pkt_num = "0" # start with packet 0
-    pkt_num = "0x" + str(pkt_num.zfill(header_size)) # force the number of digits to header size, add 0x 
+#    pkt_num = "0" # start with packet 0
+#    pkt_num = "0x" + str(pkt_num.zfill(header_size)) # force the number of digits to header size, add 0x 
+    pkt_num = "0x00"
 
     while sent_size < file_size and file_too_big == False:
         print("Getting Chunk, beginning packet sending shortly ")
         data = f.read(chunk_size) # read chunk of file for data
         #data = str(data,"utf-8") # sometimes the data will exced chunk size, uncomment this to stop
-        header = pkt_num[-header_size:] # get last characters from pkt-num
+        header = pkt_num[2:] # get last characters from pkt-num
         tx_data = header + data # add header and data
         print("The full packet (tx_data) is: " + tx_data)
         tx_data = bytes(tx_data,"utf-8") # format data for packet
@@ -143,7 +148,7 @@ while int(choice) == 2: # TX Mode
             packet_size_error = True
             break # stop trying to send this file
         rfm9x.send(tx_data)
-        packet = True # Uncomment to skip the following loop.
+        #packet = True # Uncomment to skip the following loop.
         while tries < 3 and packet is None: # try sending 3 times
             print("    Checking for ACK, pausing for 5 seconds")
             packet = rfm9x.receive(timeout = 10) # Wait for 5 seconds for receiever to request packet
@@ -169,9 +174,9 @@ while int(choice) == 2: # TX Mode
         # At this point it is assumed that the paket was correctly sent and recieved
 
         # Increment pkt_num with string format for next packet
-        print("pkt_num is currently " + pkt_num[-header_size:]) # print last charaters
+        print("pkt_num is currently " + pkt_num[2:]) # print last charaters
         pkt_num = incPktNum(pkt_num) # takes string, adds one, converts pack to string
-        print("pkt_num is now " + pkt_num[-header_size:] + "\n") # print last two characters (hex Digits) from pkt_num
+        print("pkt_num is now " + pkt_num[2:] + "\n") # print last two characters (hex Digits) from pkt_num
 
         # Increase sent size (assume packet was sent for now)
         sent_size = sent_size + chunk_size # print("sent_size is now: " + str(sent_size)) 

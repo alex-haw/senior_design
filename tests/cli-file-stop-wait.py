@@ -81,15 +81,15 @@ while int(choice) == 1: # RX Mode
             if pkt_num_rec == next_pkt_request[2:]: # If the right packet number is recieved
                 print("Recieved Packet number: " + str(pkt_num_rec) + " Writing to " + receivedfile + " now")
                 w.write(pkt_data)
-                next_pkt_request = incPktNum(next_pkt_request) # increment packet number
+                next_pkt_request = incPktNum(next_pkt_request) # increment packet number for requesting next packet
                 rfm9x.send(bytes(next_pkt_request[0:2],"utf-8")) # request the next packet number
-                print("Requesting Next Packet number: " + next_pkt_request)
+                print("    Requesting Next Packet number: " + next_pkt_request)
                 #time.sleep(1); # removed this sleep to make it faster, still sends large files when commented
             else: # if the recieved packet number was not what RX was expecting
                 rfm9x.send(bytes(next_pkt_request[2:],"utf-8")) # request the next packet from hex digits only
-                print("Requesting expected packet number: " + next_pkt_request)
+                print("    Requesting expected packet number: " + next_pkt_request)
             packet = None
-            print("Waiting for packet number" + next_pkt_request)
+            print("    Waiting for packet number" + next_pkt_request)
             packet = rfm9x.receive(timeout = 25) # wait 25 seconds before assuming the sender as quit sending
         print("Recieved has timed out for 25 seconds \n The file has either been fully recieved or the sender stopped sending")
 
@@ -117,15 +117,15 @@ while int(choice) == 2: # TX Mode
     sent_size = 0 # Clear sent size before sending file
 #    pkt_num = "0" # start with packet 0
 #    pkt_num = "0x" + str(pkt_num.zfill(header_size)) # force the number of digits to header size, add 0x 
-    pkt_num = "0x00"
-
+    pkt_num = "0x00" # start with packet number 0
     while sent_size < file_size and file_too_big == False:
         print("Getting Chunk, beginning packet sending shortly ")
         data = f.read(chunk_size) # read chunk of file for data
         #data = str(data,"utf-8") # sometimes the data will exced chunk size, uncomment this to stop
         header = pkt_num[2:] # get last characters from pkt-num
         tx_data = header + data # add header and data
-        print("The full packet (tx_data) is: " + tx_data)
+        #print("The full packet (tx_data) is: " + tx_data)
+        print("Sent packet number: " + pkt_num)
         tx_data = bytes(tx_data,"utf-8") # format data for packet
 
         # Send 1 packet and check for ACK, resend if necasary
@@ -134,24 +134,25 @@ while int(choice) == 2: # TX Mode
         if len(tx_data) > 252: # If a Unicode character is encountered, it might not fit into a byte
             packet_size_error = True
             break # stop trying to send this file
-        rfm9x.send(tx_data)
+        rfm9x.send(tx_data) # send a packet
         #packet = True # Uncomment to skip the following loop.
         while tries < 3 and packet is None: # try sending 3 times
             print("    Waiting for ACK for up to 5 seconds")
             packet = rfm9x.receive(timeout = 10) # Wait for 5 seconds for receiever to request packet
             if packet is None: # If no packet received
-                print("No ACK, Resending packet number " + pkt_num)
+                print("    No ACK, Resending packet number " + pkt_num)
                 rfm9x.send(tx_data) # send packet again
                 tries += 1 # incement tries
             else: # IF a packet is received
+                print("    ACK received")
                 pkt_ack = str(packet,"utf-8") #convert packet to string, should have two characters
                 rec_pkt_num = "0x" + pkt_ack  # turn received packet to hex string
-                next_expected_pkt = incPktNum(pkt_num)
-                print("ACK received, it is: " + pkt_ack)
+                next_expected_pkt = incPktNum(pkt_num) # pkt_num + 1
+                print("    The reciever requested packet number " + rec_pkt_num)
                 if rec_pkt_num == next_expected_pkt: # if the receir requests the next packet
                     print("Next Packet Requested, sending successful") 
                 else: # Resend packet
-                    print("Error, Resending Packet") 
+                    print("    Error, Resending Packet") 
                     rfm9x.send(tx_data) # send packet gain
                     tries += 1
                     packet = None # empty packet to start try loop again

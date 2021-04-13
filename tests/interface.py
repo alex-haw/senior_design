@@ -40,7 +40,7 @@ data = None # holds data, size us up to chunk_size
 # => tx_data = header + data
 node_num = "1"
 all_nodes = "f"
-max_pkt_size = 250 # maximum amount of bytes that can be send in a packet, it is 251B
+max_pkt_size = 247 # maximum amount of bytes that can be send in a packet, it is 251B
 header_size  =   5 # Size of header that holds packet number, 2 bytes gives up to 256 packets
                    # each bytes gives one character for hex
 chunk_size   = max_pkt_size - header_size # chunk size in Bytes, maximum size of data

@@ -200,18 +200,19 @@ while True:
     if pkt_rec is not None:
         pkt_rec = str(pkt_rec, "utf-8")
         routing_num = pkt_rec[0]
+        print("routingnum:" + routing_num)
         dest_addr = pkt_rec[1]
         source_addr = pkt_rec[2]
         pkt_rec = pkt_rec[5:]
         if dest_addr == node_num or dest_addr == all_nodes:
-            if routing_num == 0:
+            if routing_num == "0":
                 print("Files open for business:\n")
                 print(pkt_rec)
                 file_choice = None
                 file_choice = input("Select a file, if no file wanted, push enter without any text\n")
                 if file_choixe is not None:
                     request(file_choice, source_addr)
-            elif routing_num == 1:
+            elif routing_num == "1":
                 sendFile(pkt_rec, source_addr)
 
 

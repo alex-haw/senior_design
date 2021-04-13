@@ -210,7 +210,7 @@ while True:
                 print(pkt_rec)
                 file_choice = None
                 file_choice = input("Select a file, if no file wanted, push enter without any text\n")
-                if file_choixe is not None:
+                if file_choice is not None:
                     request(file_choice, source_addr)
             elif routing_num == "1":
                 sendFile(pkt_rec, source_addr)

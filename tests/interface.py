@@ -64,7 +64,7 @@ def incPktNum(pkt_num): # increment packet num from string back to string ( "0x0
 def request(file_choice, source_addr): # RX Mode
     w = open("rx_dir/" + file_choice, "a")
     print("sending routing number")
-    rfm9x.send(bytes("1"+ source_addr + node_num + "00","utf-8"))
+    rfm9x.send(bytes("1"+ source_addr + node_num + "00"+ file_choice,"utf-8"))
     pkt_number = "0" # start with packet 0
     pkt_number = "0x" + str(pkt_number.zfill(header_size)) # force the number of digits to header size, add 0x
     next_pkt_request = "0" # start expecting with packet 0
@@ -213,9 +213,10 @@ while True:
                 file_choice = ""
                 file_choice = input("Select a file, if no file wanted, push enter without any text\n")
                 if file_choice is not None:
+                    print("requesting file: " + file_choice)
                     request(file_choice, source_addr)
             elif routing_num == "1":
-                print("Pi#" + source_addr + "is requesting file: "+ pkt_rec)
+                print("Pi #" + source_addr + "is requesting file: "+ pkt_rec)
                 sendFile(pkt_rec, source_addr)
 
 

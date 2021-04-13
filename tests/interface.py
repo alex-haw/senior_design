@@ -210,11 +210,12 @@ while True:
             if routing_num == "0":
                 print("Files open for business:\n")
                 print(pkt_rec)
-                file_choice = None
+                file_choice = ""
                 file_choice = input("Select a file, if no file wanted, push enter without any text\n")
                 if file_choice is not None:
                     request(file_choice, source_addr)
             elif routing_num == "1":
+                print("Pi#" + source_addr + "is requesting file: "+ pkt_rec)
                 sendFile(pkt_rec, source_addr)
 
 

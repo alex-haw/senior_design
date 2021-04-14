@@ -88,12 +88,13 @@ while int(choice) == 1: # RX Mode
                 #time.sleep(1); # removed this sleep to make it faster, still sends large files when commented
             elif pkt_num_rec == "ff":
                 print("The final packet was received")
-                break
+                #break
             else: # if the recieved packet number was not what RX was expecting
                 rfm9x.send(bytes(next_pkt_request[2:],"utf-8")) # request the next packet from hex digits only
                 print("    Requesting expected packet number: " + next_pkt_request)
             packet = None
             packet = rfm9x.receive(timeout = 25) # wait 25 seconds before assuming the sender as quit sending
+            print("    RX MODE: ANOTHER PACKET WAS RECEIVED")
         print("Recieved has timed out for 25 seconds \n The file has either been fully recieved or the sender stopped sending")
 
 ######### Transmit Mode
@@ -176,7 +177,7 @@ while int(choice) == 2: # TX Mode
         # Go back to     while sent_size < file_size:
         if sent_size > file_size:
             print("Sending 0xff to indicate last packet")
-            last_pkt = "0xff"
+            last_pkt = "0xff" + "BLANK"
             rfm9x.send(bytes(last_pkt,"utf-8"))
     # At this Point, the file should be either sent or too many failed attempts to send it occured
     if (tries == 3):

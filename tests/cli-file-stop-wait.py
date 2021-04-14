@@ -65,6 +65,7 @@ print("Please Choose a Mode: \n RX=1\n TX=2\n")
 choice = input("Enter Number:")
 
 while int(choice) == 1: # RX Mode
+    last_pkt = False
     w = open("rx_dir/" + receivedfile, "a")
     next_pkt_request = "0x00" # start with this as the expected packet and then increment
     packet = None
@@ -74,7 +75,7 @@ while int(choice) == 1: # RX Mode
         print("Waiting for Packet")
     else: # If a packet is recieved, enter data  RX mode
         print("        RX MODE: A PACKET WAS RECEIVED")
-        while packet is not None: # Keep going as long as packets are recieved
+        while packet is not None and last_pkt is False: # Keep going as long as packets are recieved
             pkt_text = str(packet, "utf-8") # get string from packet
             pkt_num_rec = pkt_text[0:2] # get first two characcters
             #pkt_num_rec_int = int(pkt_num_rec,16)  # convert first two bytes to int from recieved pkt
@@ -88,13 +89,13 @@ while int(choice) == 1: # RX Mode
                 #time.sleep(1); # removed this sleep to make it faster, still sends large files when commented
             elif pkt_num_rec == "ff":
                 print("The final packet was received")
-                #break
+                #last_pkt = True
+                break
             else: # if the recieved packet number was not what RX was expecting
                 rfm9x.send(bytes(next_pkt_request[2:],"utf-8")) # request the next packet from hex digits only
                 print("    Requesting expected packet number: " + next_pkt_request)
             packet = None
             packet = rfm9x.receive(timeout = 25) # wait 25 seconds before assuming the sender as quit sending
-            print("    RX MODE: ANOTHER PACKET WAS RECEIVED")
         print("Recieved has timed out for 25 seconds \n The file has either been fully recieved or the sender stopped sending")
 
 ######### Transmit Mode
@@ -176,9 +177,11 @@ while int(choice) == 2: # TX Mode
         sent_size = sent_size + chunk_size # print("sent_size is now: " + str(sent_size)) 
         # Go back to     while sent_size < file_size:
         if sent_size > file_size:
-            print("Sending 0xff to indicate last packet")
+            #print("                      Sending 0xff to indicate last packet in 15 seconds")
+            print("sending 0xff for last packet")
+            #time.sleep(15)
             last_pkt = "0xff" + "BLANK"
-            rfm9x.send(bytes(last_pkt,"utf-8"))
+            rfm9x.send(bytes(last_pkt[2:],"utf-8"))
     # At this Point, the file should be either sent or too many failed attempts to send it occured
     if (tries == 3):
         print("ERROR:, too many failed attepmts to send file, the file was not fully sent")

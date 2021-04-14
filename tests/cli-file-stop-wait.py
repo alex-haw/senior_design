@@ -86,7 +86,7 @@ while int(choice) == 1: # RX Mode
                 rfm9x.send(bytes(next_pkt_request[2:],"utf-8")) # request the next packet number
                 print("    Requesting Next Packet number: " + next_pkt_request)
                 #time.sleep(1); # removed this sleep to make it faster, still sends large files when commented
-            elif pkt_num_rec = "ff"
+            elif pkt_num_rec == "ff"
                 print("The final packet was received")
                 break
             else: # if the recieved packet number was not what RX was expecting

@@ -77,7 +77,7 @@ while int(choice) == 1: # RX Mode
         while packet is not None: # Keep going as long as packets are recieved
             pkt_text = str(packet, "utf-8") # get string from packet
             pkt_num_rec = pkt_text[0:2] # get first two characcters
-            pkt_num_rec_int = int(pkt_num_rec,16)  # convert first two bytes to int from recieved pkt
+            #pkt_num_rec_int = int(pkt_num_rec,16)  # convert first two bytes to int from recieved pkt
             pkt_data = pkt_text[2:] # get everything after first 2 characters
             if pkt_num_rec == next_pkt_request[2:]: # If the right packet number is recieved
                 print("Recieved Packet number: " + str(pkt_num_rec) + " Writing to " + receivedfile + " now")
@@ -177,7 +177,7 @@ while int(choice) == 2: # TX Mode
         if sent_size > file_size:
             print("Sending 0xff to indicate last packet")
             last_pkt = "0xff"
-            rfm9x.send(bytes(lask_pkt,"utf-8"))
+            rfm9x.send(bytes(last_pkt,"utf-8"))
     # At this Point, the file should be either sent or too many failed attempts to send it occured
     if (tries == 3):
         print("ERROR:, too many failed attepmts to send file, the file was not fully sent")

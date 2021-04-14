@@ -83,7 +83,7 @@ while int(choice) == 1: # RX Mode
                 print("Recieved Packet number: " + str(pkt_num_rec) + " Writing to " + receivedfile + " now")
                 w.write(pkt_data)
                 next_pkt_request = incPktNum(next_pkt_request) # increment packet number for requesting next packet
-                rfm9x.send(bytes(next_pkt_request[0:2],"utf-8")) # request the next packet number
+                rfm9x.send(bytes(next_pkt_request[2:],"utf-8")) # request the next packet number
                 print("    Requesting Next Packet number: " + next_pkt_request)
                 time.sleep(1); # removed this sleep to make it faster, still sends large files when commented
             else: # if the recieved packet number was not what RX was expecting
@@ -145,8 +145,9 @@ while int(choice) == 2: # TX Mode
                 rfm9x.send(tx_data) # send packet again
                 tries += 1 # incement tries
             else: # IF a packet is received
-                print("    ACK received")
+                #print("    ACK received")
                 pkt_ack = str(packet,"utf-8") #convert packet to string, should have two characters
+                print("The ACK received is: " + pkt_ack)
                 rec_pkt_num = "0x" + pkt_ack  # turn received packet to hex string
                 next_expected_pkt = incPktNum(pkt_num) # pkt_num + 1
                 print("    The reciever requested packet number " + rec_pkt_num)

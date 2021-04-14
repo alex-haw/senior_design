@@ -73,6 +73,7 @@ while int(choice) == 1: # RX Mode
     if packet is None: # idle RX mode
         print("Waiting for Packet")
     else: # If a packet is recieved, enter data  RX mode
+        print("        RX MODE: A PACKET WAS RECEIVED")
         while packet is not None: # Keep going as long as packets are recieved
             pkt_text = str(packet, "utf-8") # get string from packet
             pkt_num_rec = pkt_text[0:2] # get first two characcters
@@ -84,7 +85,7 @@ while int(choice) == 1: # RX Mode
                 next_pkt_request = incPktNum(next_pkt_request) # increment packet number for requesting next packet
                 rfm9x.send(bytes(next_pkt_request[0:2],"utf-8")) # request the next packet number
                 print("    Requesting Next Packet number: " + next_pkt_request)
-                #time.sleep(1); # removed this sleep to make it faster, still sends large files when commented
+                time.sleep(1); # removed this sleep to make it faster, still sends large files when commented
             else: # if the recieved packet number was not what RX was expecting
                 rfm9x.send(bytes(next_pkt_request[2:],"utf-8")) # request the next packet from hex digits only
                 print("    Requesting expected packet number: " + next_pkt_request)

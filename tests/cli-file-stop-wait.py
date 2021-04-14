@@ -86,7 +86,7 @@ while int(choice) == 1: # RX Mode
                 rfm9x.send(bytes(next_pkt_request[2:],"utf-8")) # request the next packet number
                 print("    Requesting Next Packet number: " + next_pkt_request)
                 #time.sleep(1); # removed this sleep to make it faster, still sends large files when commented
-            elif pkt_num_rec == "ff"
+            elif pkt_num_rec == "ff":
                 print("The final packet was received")
                 break
             else: # if the recieved packet number was not what RX was expecting
@@ -174,10 +174,10 @@ while int(choice) == 2: # TX Mode
         # Increase sent size (assume packet was sent for now)
         sent_size = sent_size + chunk_size # print("sent_size is now: " + str(sent_size)) 
         # Go back to     while sent_size < file_size:
-        if sent_size > file_size
+        if sent_size > file_size:
             print("Sending 0xff to indicate last packet")
             last_pkt = "0xff"
-            rfm9x.send(bytes(lask_pkt,"utf-8")
+            rfm9x.send(bytes(lask_pkt,"utf-8"))
     # At this Point, the file should be either sent or too many failed attempts to send it occured
     if (tries == 3):
         print("ERROR:, too many failed attepmts to send file, the file was not fully sent")

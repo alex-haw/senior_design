@@ -126,7 +126,7 @@ def sendFile(pkt_rec, source_addr): # TX Mode
         data = f.read(chunk_size) # read chunk of file for data
         #data = str(data,"utf-8") # sometimes the data will exced chunk size, uncomment this to stop
         if len(data) < chunk_size:
-            pkt_num = "ff"
+            pkt_num = "0xff"
         header = "3" + source_addr + node_num + pkt_num[2:] # get last characters from pkt-num
         tx_data = header + data # add header and data
         print("The full packet (tx_data) is: " + tx_data)

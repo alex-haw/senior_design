@@ -57,7 +57,7 @@ def incPktNum(pkt_num): # increment packet num from string back to string ( "0x0
     pkt_num = hex(pkt_num) # convert from int to hex
     pkt_num = str(pkt_num) # convert to string, includes "0x"
     pkt_num = pkt_num[2:] # get rid of "0x"
-    pkt_num = pkt_num.zfill(header_size) # fit digits to header size
+    pkt_num = pkt_num.zfill(2) # fit digits to header size
     pkt_num = "0x" + pkt_num # add 0x back
     return pkt_num
 

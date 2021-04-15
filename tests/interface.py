@@ -120,7 +120,6 @@ def sendFile(pkt_rec, source_addr): # TX Mode
     if (num_of_chunks > max_num_of_packets): # If the amount of packets exceeds pkt_num range
         file_too_big = True # do not send file by skipping the next while loop
     print("It will take at least " + str(num_of_chunks) + " packets to send " + currentfile)
-    time.sleep(4) # Give user 4 seconds to see if the file will take too long to send
 
     sent_size = 0 # Clear sent size before sending file
     pkt_num = "0x00" # start with packet 0 
@@ -143,7 +142,7 @@ def sendFile(pkt_rec, source_addr): # TX Mode
             packet_size_error = True
             break # stop trying to send this file
         rfm9x.send(tx_data)
-        packet = True # Uncomment to skip the following loop.
+        #packet = True # Uncomment to skip the following loop.
         while tries < 3 and packet is None: # try sending 3 times
             print("    Checking for ACK, pausing for 5 seconds")
             packet = rfm9x.receive(timeout = 10) # Wait for 5 seconds for receiever to request packet

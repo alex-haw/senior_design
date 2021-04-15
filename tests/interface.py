@@ -72,14 +72,16 @@ def request(file_choice, source_addr): # RX Mode
     packet = None
     print("Waiting to recieve for 5 seconds")
     packet = rfm9x.receive(timeout=5) # wait 5 seconds for reciever timeout
+    print("Received")
     if packet is None: # idle RX mode
         print("Waiting for Packet")
     else: # If a packet is recieved, enter data  RX mode
         # try: # Try to recieve unless there is an error at any point in the rest of this try portion, ignore for now
         pkt_num_rec = ""
-        while pkt_num_rec != "ff": # Keep going as long as packets are recieved
+        while True:#pkt_num_rec != "ff": # Keep going as long as packets are recieved
             packet_text = str(packet, "utf-8") # get string from packet
-            pkt_num_rec = packet_text[3:5] # get first two characters for packet number
+            pkt_num_rec = packet_text[3:5] # get first two characters for packet numberi
+            print(pkt_num_rec)
             pkt_num_rec = int(pkt_num_rec,16)  # convert first two bytes to int from recieved pkt
             packet_text = packet_text[header_size:] # get data from packet
             if pkt_num_rec == pkt_number[2:] or pkt_num_rec == "ff": # compare hex digits to the pkt_number without "0x"
@@ -118,7 +120,7 @@ def sendFile(pkt_rec, source_addr): # TX Mode
 
     sent_size = 0 # Clear sent size before sending file
     pkt_num = "0" # start with packet 0
-    pkt_num = "0x" + str(pkt_num.zfill(header_size)) # force the number of digits to header size, add 0x 
+    pkt_num = "0x" + str(pkt_num.zfill(2)) # force the number of digits to header size, add 0x 
 
     while sent_size < file_size and file_too_big == False:
         print("Getting Chunk, beginning packet sending shortly ")

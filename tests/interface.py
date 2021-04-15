@@ -77,7 +77,7 @@ def request(file_choice, source_addr): # RX Mode
     else: # If a packet is recieved, enter data  RX mode
         # try: # Try to recieve unless there is an error at any point in the rest of this try portion, ignore for now
         pkt_num_rec = ""
-        while pkt_num_rec != "ff": # Keep going as long as packets are recieved
+        while pkt_num_rec != "ff" and packet is not None: # Keep going as long as packets are recieved
             packet_text = str(packet, "utf-8") # get string from packet
             pkt_num_rec = packet_text[3:5] # get first two characters for packet numberi
             print("Full packet txt received: " + packet_text)
@@ -100,6 +100,8 @@ def request(file_choice, source_addr): # RX Mode
             else: # if the recieved packet number was not what RX was expecting
                 rfm9x.send(bytes(next_pkt_request[2:],"utf-8")) # request the next packet from hex digits only
         #except UnicodeDecodeError: #Ignore for now
+            packet = None
+            packet = rfm9x.receive(timeout = 5)
             # print("Packet Error: UnicodeDecodeError, skipping")
             # request next packet incase we missed one
         print("Recieved has timed out for 25 seconds \n The file has either been fully recieved or the sender stopped sending")

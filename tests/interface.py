@@ -195,7 +195,6 @@ def sendFile(pkt_rec, source_addr): # TX Mode
     #End of TX mode, go back to start of tx mode
 
 while True:
-    time.sleep(random.randint(0,5))
     print("Sending file names")
     file_names = ""
     pkt_rec = None
@@ -203,7 +202,7 @@ while True:
         file_names += files[x] + "\n"
     file_names = bytes("0f" + node_num + "00" + file_names, "utf-8")
     rfm9x.send(file_names)
-    pkt_rec = rfm9x.receive(timeout = 5)
+    pkt_rec = rfm9x.receive(timeout = random.randint(3,8))
     if pkt_rec is not None:
         pkt_rec = str(pkt_rec, "utf-8")
         routing_num = pkt_rec[0]

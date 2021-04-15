@@ -215,8 +215,8 @@ while True:
                 print("Files open for business:\n")
                 print(pkt_rec)
                 file_choice = ""
-                file_choice = input("Select a file, if no file wanted, push enter without any text\n")
-                if file_choice is not None:
+                file_choice = input("Select a file, if no file wanted, push enter 'None'\n")
+                if file_choice != "None":
                     print("requesting file: " + file_choice)
                     request(file_choice, source_addr)
             elif routing_num == "1":

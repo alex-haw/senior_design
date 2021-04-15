@@ -119,8 +119,7 @@ def sendFile(pkt_rec, source_addr): # TX Mode
     time.sleep(4) # Give user 4 seconds to see if the file will take too long to send
 
     sent_size = 0 # Clear sent size before sending file
-    pkt_num = "0" # start with packet 0
-    pkt_num = "0x" + str(pkt_num.zfill(2)) # force the number of digits to header size, add 0x 
+    pkt_num = "0x00" # start with packet 0 
 
     while sent_size < file_size and file_too_big == False:
         print("Getting Chunk, beginning packet sending shortly ")
@@ -128,7 +127,7 @@ def sendFile(pkt_rec, source_addr): # TX Mode
         #data = str(data,"utf-8") # sometimes the data will exced chunk size, uncomment this to stop
         if len(data) < chunk_size:
             pkt_num = "ff"
-        header = "3" + source_addr + node_num + pkt_num[-header_size:] # get last characters from pkt-num
+        header = "3" + source_addr + node_num + pkt_num[2:] # get last characters from pkt-num
         tx_data = header + data # add header and data
         print("The full packet (tx_data) is: " + tx_data)
         tx_data = bytes(tx_data,"utf-8") # format data for packet

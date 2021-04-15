@@ -65,10 +65,9 @@ def request(file_choice, source_addr): # RX Mode
     w = open("rx_dir/" + file_choice, "a")
     print("sending routing number")
     rfm9x.send(bytes("1"+ source_addr + node_num + "00"+ file_choice,"utf-8"))
-    pkt_number = "0" # start with packet 0
-    pkt_number = "0x" + str(pkt_number.zfill(header_size)) # force the number of digits to header size, add 0x
+    pkt_number = "0x00" # force the number of digits to header size, add 0x
     next_pkt_request = "0" # start expecting with packet 0
-    next_pkt_request = "0x"+ "3" + source_addr + node_num + str(next_pkt_request.zfill(header_size)) # force the number of digits to header size, add 0x 
+    next_pkt_request = "0x"+ "3" + source_addr + node_num + str(next_pkt_request.zfill(2)) # force the number of digits to header size, add 0x 
     packet = None
     print("Waiting to recieve for 5 seconds")
     packet = rfm9x.receive(timeout=5) # wait 5 seconds for reciever timeout
@@ -78,19 +77,22 @@ def request(file_choice, source_addr): # RX Mode
     else: # If a packet is recieved, enter data  RX mode
         # try: # Try to recieve unless there is an error at any point in the rest of this try portion, ignore for now
         pkt_num_rec = ""
-        while True:#pkt_num_rec != "ff": # Keep going as long as packets are recieved
+        while pkt_num_rec != "ff": # Keep going as long as packets are recieved
             packet_text = str(packet, "utf-8") # get string from packet
             pkt_num_rec = packet_text[3:5] # get first two characters for packet numberi
+            print("Full packet txt received: " + packet_text)
             print(pkt_num_rec)
-            pkt_num_rec = int(pkt_num_rec,16)  # convert first two bytes to int from recieved pkt
+            #pkt_num_rec = int(pkt_num_rec,16)  # convert first two bytes to int from recieved pkt
             packet_text = packet_text[header_size:] # get data from packet
             if pkt_num_rec == pkt_number[2:] or pkt_num_rec == "ff": # compare hex digits to the pkt_number without "0x"
                 # Write data to file
-                print("Recieved Packet number: " + str(pkt_rec) + " Writing to " + receivedfile + " now")
+                print("Recieved Packet number: " + pkt_num_rec + " Writing to " + receivedfile + " now")
                 w.write(packet_text)
                 # Request Next Packet, commneted old code in favor of using incPktNum function #pkt_number += 1
                 #next_pkt_request = pkt_rec + 1 # integer #next_pkt_request = hex(next_pkt_request) #next_ptk_request = str(next_pkt_request)
-                next_pkt_request = "3" + source_addr + node_num + incPktNum(pkt_number) # increment packet number
+                pkt_number = incPktNum(pkt_number)
+                next_pkt_request = "3" + source_addr + node_num + pkt_number[2:] # increment packet number
+                print("next_pkt_req: " + next_pkt_request)
                 next_pkt_request = bytes(next_pkt_request,"utf-8") #convert next_pkt_request to bytes
                 print("Requesting Next Packet")
                 #time.sleep(1); # removed this sleep to make it faster, still sends large files when commented

@@ -80,8 +80,11 @@ def request(file_choice, source_addr): # RX Mode
         while pkt_num_rec != "ff" and packet is not None: # Keep going as long as packets are recieved
             packet_text = str(packet, "utf-8") # get string from packet
             pkt_num_rec = packet_text[3:5] # get first two characters for packet numberi
+            routing_num = packet_text[0]
             print("Full packet txt received: " + packet_text)
-            print(pkt_num_rec)
+            if routing_num != "3":
+                print("There has been a problem in sending, aborting to top function")
+                return
             #pkt_num_rec = int(pkt_num_rec,16)  # convert first two bytes to int from recieved pkt
             packet_text = packet_text[header_size:] # get data from packet
             if pkt_num_rec == pkt_number[2:] or pkt_num_rec == "ff": # compare hex digits to the pkt_number without "0x"

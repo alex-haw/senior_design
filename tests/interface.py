@@ -159,7 +159,7 @@ def sendFile(pkt_rec, source_addr): # TX Mode
             else: # IF a packet is received
                 packet_txt = str(packet,"utf-8") #convert packet to string, should have two characters
                 print("Ack Received")
-                dest_addr = packet_txt[2]
+                dest_addr = packet_txt[1]
                 if dest_addr == node_num:
                     if packet_txt[3:] == pkt_num[2:]: # if the received packet is equal to packet_num
                         print("Error in received pkt, resending")

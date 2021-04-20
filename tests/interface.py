@@ -52,9 +52,9 @@ chunk_size   = max_pkt_size - header_size # chunk size in Bytes, maximum size of
 
 # Function Declarations:
 def incPktNum(pkt_num): # increment packet num from string back to string ( "0x00" -> "0x01") 
-    if pkt_num == "0xff":
-        pkt_num = "0x00"
-        return pkt_num
+    #if pkt_num == "0xff":
+     #   pkt_num = "0x00"
+      #  return pkt_nun
     pkt_num = int(pkt_num,16)  # Convert pkt_num from hex    to int
     pkt_num += 1  # Incrment pkt_num
     pkt_num = hex(pkt_num) # convert from int to hex
@@ -69,8 +69,8 @@ def request(file_choice, source_addr): # RX Mode
     print("sending routing number")
     rfm9x.send(bytes("1"+ source_addr + node_num + "00"+ file_choice,"utf-8"))
     pkt_number = "0x00" # force the number of digits to header size, add 0x
-    next_pkt_request = "0" # start expecting with packet 0
-    next_pkt_request = "0x"+ "3" + source_addr + node_num + str(next_pkt_request.zfill(2)) # force the number of digits to header size, add 0x 
+    next_pkt_request = "00" # start expecting with packet 0
+    next_pkt_request = "0x"+ "3" + source_addr + node_num + next_pkt_request # force the number of digits to header size, add 0x 
     packet = None
     print("Waiting to recieve for 5 seconds")
     packet = rfm9x.receive(timeout=5) # wait 5 seconds for reciever timeout
@@ -80,7 +80,7 @@ def request(file_choice, source_addr): # RX Mode
     else: # If a packet is recieved, enter data  RX mode
         # try: # Try to recieve unless there is an error at any point in the rest of this try portion, ignore for now
         pkt_num_rec = ""
-        while pkt_num_rec != "ff" and packet is not None: # Keep going as long as packets are recieved
+        while packet is not None: # Keep going as long as packets are recieved
             packet_text = str(packet, "utf-8") # get string from packet
             dest_addr = packet_text[1]
             pkt_num_rec = packet_text[3:5] # get first two characters for packet numberi

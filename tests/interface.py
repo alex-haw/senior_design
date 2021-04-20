@@ -52,6 +52,9 @@ chunk_size   = max_pkt_size - header_size # chunk size in Bytes, maximum size of
 
 # Function Declarations:
 def incPktNum(pkt_num): # increment packet num from string back to string ( "0x00" -> "0x01") 
+    if pkt_num == "0xff":
+        pkt_num = "0x00"
+        return pkt_num
     pkt_num = int(pkt_num,16)  # Convert pkt_num from hex    to int
     pkt_num += 1  # Incrment pkt_num
     pkt_num = hex(pkt_num) # convert from int to hex
@@ -79,35 +82,34 @@ def request(file_choice, source_addr): # RX Mode
         pkt_num_rec = ""
         while pkt_num_rec != "ff" and packet is not None: # Keep going as long as packets are recieved
             packet_text = str(packet, "utf-8") # get string from packet
+            dest_addr = packet_text[1]
             pkt_num_rec = packet_text[3:5] # get first two characters for packet numberi
             routing_num = packet_text[0]
             print("Full packet txt received: " + packet_text)
-            if routing_num != "3":
+            if routing_num != "3" and routing_num != "4":
                 print("There has been a problem in sending, aborting to top function")
                 return
-            #pkt_num_rec = int(pkt_num_rec,16)  # convert first two bytes to int from recieved pkt
-            packet_text = packet_text[header_size:] # get data from packet
-            if pkt_num_rec == pkt_number[2:] or pkt_num_rec == "ff": # compare hex digits to the pkt_number without "0x"
-                # Write data to file
-                print("Recieved Packet number: " + pkt_num_rec + " Writing to " + receivedfile + " now")
-                w.write(packet_text)
-                # Request Next Packet, commneted old code in favor of using incPktNum function #pkt_number += 1
-                #next_pkt_request = pkt_rec + 1 # integer #next_pkt_request = hex(next_pkt_request) #next_ptk_request = str(next_pkt_request)
-                pkt_number = incPktNum(pkt_number)
-                next_pkt_request = "3" + source_addr + node_num + pkt_number[2:] # increment packet number
-                print("next_pkt_req: " + next_pkt_request)
-                next_pkt_request = bytes(next_pkt_request,"utf-8") #convert next_pkt_request to bytes
-                print("Requesting Next Packet")
-                #time.sleep(1); # removed this sleep to make it faster, still sends large files when commented
-                rfm9x.send(next_pkt_request)
-            else: # if the recieved packet number was not what RX was expecting
-                rfm9x.send(bytes(next_pkt_request[2:],"utf-8")) # request the next packet from hex digits only
-        #except UnicodeDecodeError: #Ignore for now
-            packet = None
-            packet = rfm9x.receive(timeout = 5)
-            # print("Packet Error: UnicodeDecodeError, skipping")
-            # request next packet incase we missed one
-        print("Recieved has timed out for 25 seconds \n The file has either been fully recieved or the sender stopped sending")
+            if dest_addr == node_num:
+                packet_text = packet_text[header_size:] # get data from packet
+                if pkt_num_rec == pkt_number[2:]: # compare hex digits to the pkt_number
+                    # Write data to file
+                    print("Recieved Packet number: " + pkt_num_rec + " Writing to " + receivedfile + " now")
+                    w.write(packet_text)
+            
+                    pkt_number = incPktNum(pkt_number)
+                    next_pkt_request = routing_num + source_addr + node_num + pkt_number[2:] # increment packet number
+                    print("next_pkt_req: " + next_pkt_request)
+                    next_pkt_request = bytes(next_pkt_request,"utf-8") #convert next_pkt_request to bytes
+                    print("Requesting Next Packet")
+                    #time.sleep(1); # removed this sleep to make it faster, still sends large files when commented
+                    rfm9x.send(next_pkt_request)
+                    if routing_num == "4":
+                        print("All packets received successfully, going back to main")
+                        return
+                else: # if the recieved packet number was not what RX was expecting
+                    rfm9x.send(bytes(next_pkt_request[2:],"utf-8")) # request the next packet from hex digits only
+                packet = None
+                packet = rfm9x.receive(timeout = 5)
 
 ######### Transmit Mode
 def sendFile(pkt_rec, source_addr): # TX Mode
@@ -130,10 +132,10 @@ def sendFile(pkt_rec, source_addr): # TX Mode
     while sent_size < file_size and file_too_big == False:
         print("Getting Chunk, beginning packet sending shortly ")
         data = f.read(chunk_size) # read chunk of file for data
-        #data = str(data,"utf-8") # sometimes the data will exced chunk size, uncomment this to stop
+        routing_num = "3"
         if len(data) < chunk_size:
-            pkt_num = "0xff"
-        header = "3" + source_addr + node_num + pkt_num[2:] # get last characters from pkt-num
+            routing_num = "4"
+        header = routing_num + source_addr + node_num + pkt_num[2:] # get last characters from pkt-num
         tx_data = header + data # add header and data
         print("The full packet (tx_data) is: " + tx_data)
         tx_data = bytes(tx_data,"utf-8") # format data for packet
@@ -158,7 +160,7 @@ def sendFile(pkt_rec, source_addr): # TX Mode
                 print("Ack Received")
                 dest_addr = packet_txt[2]
                 if dest_addr == node_num:
-                    if packet_txt[3:] == pkt_num[-header_size:]: # if the received packet is equal to packet_num
+                    if packet_txt[3:] == pkt_num[2:]: # if the received packet is equal to packet_num
                         print("Error in received pkt, resending")
                         rfm9x.send(tx_data) # send packet gain
                         tries += 1
@@ -176,9 +178,10 @@ def sendFile(pkt_rec, source_addr): # TX Mode
         # At this point it is assumed that the paket was correctly sent and recieved
 
         # Increment pkt_num with string format for next packet
-        print("pkt_num is currently " + pkt_num[-header_size:]) # print last charaters
+        print("pkt_num is currently " + pkt_num[2:]) # print last charaters
         pkt_num = incPktNum(pkt_num) # takes string, adds one, converts pack to string
-        print("pkt_num is now " + pkt_num[-header_size:] + "\n") # print last two characters (hex Digits) from pkt_num
+        pkt_num = pkt_num[2:]
+        print("pkt_num is now " + pkt_num[2:] + "\n") # print last two characters (hex Digits) from pkt_num
 
         # Increase sent size (assume packet was sent for now)
         sent_size = sent_size + chunk_size # print("sent_size is now: " + str(sent_size)) 

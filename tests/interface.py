@@ -38,7 +38,7 @@ open("rx_dir/" + receivedfile,"w").close() # open file and close to clear it whe
 header = None # holds packet number, size defined by header_size  
 data = None # holds data, size us up to chunk_size
 # => tx_data = header + data
-node_num = "1"
+node_num = "2"
 all_nodes = "f"
 max_pkt_size = 247 # maximum amount of bytes that can be send in a packet, it is 251B
 header_size  =   5 # Size of header that holds packet number, 2 bytes gives up to 256 packets
@@ -54,7 +54,7 @@ chunk_size   = max_pkt_size - header_size # chunk size in Bytes, maximum size of
 def incPktNum(pkt_num): # increment packet num from string back to string ( "0x00" -> "0x01") 
     if pkt_num == "0xff":
         pkt_num = "0x00"
-        return pkt_nun
+        return pkt_num
     pkt_num = int(pkt_num,16)  # Convert pkt_num from hex    to int
     pkt_num += 1  # Incrment pkt_num
     pkt_num = hex(pkt_num) # convert from int to hex
@@ -110,7 +110,7 @@ def request(file_choice, source_addr): # RX Mode
                 else: # if the recieved packet number was not what RX was expecting
                     rfm9x.send(bytes(next_pkt_request[2:],"utf-8")) # request the next packet from hex digits only
                 packet = None
-                packet = rfm9x.receive(timeout = 5)
+                packet = rfm9x.receive(timeout = 10)
 
 ######### Transmit Mode
 def sendFile(pkt_rec, source_addr): # TX Mode

@@ -52,9 +52,9 @@ chunk_size   = max_pkt_size - header_size # chunk size in Bytes, maximum size of
 
 # Function Declarations:
 def incPktNum(pkt_num): # increment packet num from string back to string ( "0x00" -> "0x01") 
-    #if pkt_num == "0xff":
-     #   pkt_num = "0x00"
-      #  return pkt_nun
+    if pkt_num == "0xff":
+        pkt_num = "0x00"
+        return pkt_nun
     pkt_num = int(pkt_num,16)  # Convert pkt_num from hex    to int
     pkt_num += 1  # Incrment pkt_num
     pkt_num = hex(pkt_num) # convert from int to hex
@@ -62,6 +62,7 @@ def incPktNum(pkt_num): # increment packet num from string back to string ( "0x0
     pkt_num = pkt_num[2:] # get rid of "0x"
     pkt_num = pkt_num.zfill(2) # fit digits to header size
     pkt_num = "0x" + pkt_num # add 0x back
+    print("packet num = " + pkt_num)
     return pkt_num
 
 def request(file_choice, source_addr): # RX Mode
@@ -180,7 +181,6 @@ def sendFile(pkt_rec, source_addr): # TX Mode
         # Increment pkt_num with string format for next packet
         print("pkt_num is currently " + pkt_num[2:]) # print last charaters
         pkt_num = incPktNum(pkt_num) # takes string, adds one, converts pack to string
-        pkt_num = pkt_num[2:]
         print("pkt_num is now " + pkt_num[2:] + "\n") # print last two characters (hex Digits) from pkt_num
 
         # Increase sent size (assume packet was sent for now)

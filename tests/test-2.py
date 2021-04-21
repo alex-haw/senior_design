@@ -38,7 +38,12 @@ rfm9x.tx_power = 23
 # Long Range Test 1:
 # rmf9x.signal_bandwdith = 125000
 # rfm9x.coding_rate = 5
-# rfm9x.spreading_factor = 7
+# rfm9x.spreading_factor = 12
+
+# Long Range Test 2:
+rfm9x.signal_bandwdith = 62500
+# rfm9x.coding_rate = 5
+rfm9x.spreading_factor = 12
 
 prev_packet = None
 
@@ -71,7 +76,8 @@ while True:
         time.sleep(5)
 
     while mode == "RX":
-        packet = rfm9x.receive()
+        #packet = rfm9x.receive()
+        packet = rfm9x.receive(timeout = 10)
         if packet is None:
             print("Waiting for packet")
         else:

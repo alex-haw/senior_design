@@ -22,9 +22,9 @@ rfm9x = adafruit_rfm9x.RFM9x(spi, CS, RESET, 915.0)
 rfm9x.tx_power = 23
 # rmf9x.signal_bandwdith = 125000 # default is 125000 (Hz), 125000 is used in long range
                                   # Signal_bandwdith can be 7800, 10400, 15600, 20800, 31250, 41700, 62500, 125000, 250000
-# rfm9x.coding_rate = 5 # Default is 5, can be 5,6,7,8
+#rfm9x.coding_rate = 8 # Default is 5, can be 5,6,7,8
                         # Coding_rate (CR) can be be set higher for better noise tolerance, and lower for increased bit rate
-# rfm9x.spreading_factor = 7 # default is 7, higher values increase the ability to distingish signal from noise
+#rfm9x.spreading_factor = 12 # default is 7, higher values increase the ability to distingish signal from noise
                              # lower values increase data transmission rate
 prev_packet = None
 
@@ -38,7 +38,7 @@ open("rx_dir/" + receivedfile,"w").close() # open file and close to clear it whe
 header = None # holds packet number, size defined by header_size  
 data = None # holds data, size us up to chunk_size
 # => tx_data = header + data
-node_num = "2"
+node_num = "1"
 all_nodes = "f"
 max_pkt_size = 247 # maximum amount of bytes that can be send in a packet, it is 251B
 header_size  =   5 # Size of header that holds packet number, 2 bytes gives up to 256 packets

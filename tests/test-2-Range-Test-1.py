@@ -38,7 +38,7 @@ rfm9x.tx_power = 23
 # Long Range Test 1:
 # rmf9x.signal_bandwdith = 125000
 # rfm9x.coding_rate = 5
-# rfm9x.spreading_factor = 12
+rfm9x.spreading_factor = 12
 
 # Long Range Test 2:
 # rfm9x.signal_bandwdith = 62500

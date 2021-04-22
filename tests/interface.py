@@ -102,7 +102,7 @@ def request(file_choice, source_addr): # RX Mode
                         # Write data to file
                         print("Recieved Packet number: " + pkt_num_rec + " Writing to " + receivedfile + " now")
                         w.write(packet_text)
-            
+                        prev_pkt_num = pkt_number 
                         pkt_number = incPktNum(pkt_number)
                         next_pkt_request = routing_num + source_addr + node_num + pkt_number[2:] # increment packet number
                         print("next_pkt_req: " + next_pkt_request)
@@ -113,6 +113,8 @@ def request(file_choice, source_addr): # RX Mode
                         if routing_num == "4":
                             print("All packets received successfully, going back to main")
                             return
+                    elif pkt_num_rec == prev_pkt_num:
+                        rfm9x.send(next_pkt_request)
             packet = None
             packet = rfm9x.receive(timeout = 15)
 

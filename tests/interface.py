@@ -213,6 +213,7 @@ def sendFile(pkt_rec, source_addr): # TX Mode
     #End of TX mode, go back to start of tx mode
 
 while True:
+    error = 0
     print("Sending file names")
     file_names = ""
     pkt_rec = None
@@ -222,27 +223,31 @@ while True:
     rfm9x.send(file_names)
     pkt_rec = rfm9x.receive(timeout = random.randint(3,8))
     if pkt_rec is not None:
-        pkt_rec = str(pkt_rec, "utf-8")
-        routing_num = pkt_rec[0]
-        print("routingnum:" + routing_num)
-        dest_addr = pkt_rec[1]
-        source_addr = pkt_rec[2]
-        pkt_rec = pkt_rec[5:]
-        if dest_addr == node_num or dest_addr == all_nodes:
-            if routing_num == "0":
-                print("Files open for business:\n")
-                print(pkt_rec)
-                file_choice = ""
-                file_choice = input("Select a file, if no file wanted, push enter 'None'\n")
-                if file_choice != "None":
-                    print("requesting file: " + file_choice)
-                    request(file_choice, source_addr)
-            elif routing_num == "1":
-                print("Pi #" + source_addr + "is requesting file: "+ pkt_rec)
-                sendFile(pkt_rec, source_addr)
-            elif routing_num == "3":
-                print("Sleeping to break pi out of cycle")
-                time.sleep(25)
+        try:
+            pkt_rec = str(pkt_rec, "utf-8")
+        except UnicodeDecodeError:
+            error = 1
+        if error != 1:
+            routing_num = pkt_rec[0]
+            print("routingnum:" + routing_num)
+            dest_addr = pkt_rec[1]
+            source_addr = pkt_rec[2]
+            pkt_rec = pkt_rec[5:]
+            if dest_addr == node_num or dest_addr == all_nodes:
+                if routing_num == "0":
+                    print("Files open for business:\n")
+                    print(pkt_rec)
+                    file_choice = ""
+                    file_choice = input("Select a file, if no file wanted, push enter 'None'\n")
+                    if file_choice != "None":
+                        print("requesting file: " + file_choice)
+                        request(file_choice, source_addr)
+                elif routing_num == "1":
+                    print("Pi #" + source_addr + "is requesting file: "+ pkt_rec)
+                    sendFile(pkt_rec, source_addr)
+                elif routing_num == "3":
+                    print("Sleeping to break pi out of cycle")
+                    time.sleep(25)
 
 
 while True: # End Idle Mode (optional if a break in the TX mode

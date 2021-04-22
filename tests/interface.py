@@ -91,8 +91,8 @@ def request(file_choice, source_addr): # RX Mode
             except UnicodeDecodeError:
                 print("An error has occured",)
                 error = 1
-            print("Full packet txt received: " + packet_text)
             if error != 1:
+                print("Full packet txt received:" + packet_text)
                 if routing_num != "3" and routing_num != "4":
                     print("There has been a problem in sending, aborting to top function")
                     return

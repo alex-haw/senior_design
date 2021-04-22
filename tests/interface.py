@@ -114,9 +114,9 @@ def request(file_choice, source_addr): # RX Mode
                             print("All packets received successfully, going back to main")
                             return
                     else: # if the recieved packet number was not what RX was expecting
-                        rfm9x.send(next_pkt_request[2:],"utf-8") # request the next packet from hex digits onl
+                        rfm9x.send(next_pkt_request) # request the next packet from hex digits onl
             else:
-                rfm9x.send(next_pkt_request[2:],"utf-8")
+                rfm9x.send(next_pkt_request)
             packet = None
             packet = rfm9x.receive(timeout = 15)
 

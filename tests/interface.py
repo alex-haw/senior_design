@@ -159,7 +159,7 @@ def sendFile(pkt_rec, source_addr): # TX Mode
         #packet = True # Uncomment to skip the following loop.
         while tries < 3 and packet is None: # try sending 3 times
             print("    Checking for ACK, pausing for 5 seconds")
-            packet = rfm9x.receive(timeout = 10) # Wait for 5 seconds for receiever to request packet
+            packet = rfm9x.receive(timeout = 5) # Wait for 5 seconds for receiever to request packet
             if packet is None: # If no packet received
                 print("No ACK, Resending packet number " + pkt_num)
                 rfm9x.send(tx_data) # send packet again

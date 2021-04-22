@@ -82,35 +82,43 @@ def request(file_choice, source_addr): # RX Mode
         # try: # Try to recieve unless there is an error at any point in the rest of this try portion, ignore for now
         pkt_num_rec = ""
         while packet is not None: # Keep going as long as packets are recieved
-            packet_text = str(packet, "utf-8") # get string from packet
-            dest_addr = packet_text[1]
-            pkt_num_rec = packet_text[3:5] # get first two characters for packet numberi
-            routing_num = packet_text[0]
+            error = 0
+            try:
+                packet_text = str(packet, "utf-8") # get string from packet
+                dest_addr = packet_text[1]
+                pkt_num_rec = packet_text[3:5]
+                routing_num = packet_text[0]
+            except UnicodeDecodeError:
+                print("An error has occured",)
+                error = 1
             print("Full packet txt received: " + packet_text)
-            if routing_num != "3" and routing_num != "4":
-                print("There has been a problem in sending, aborting to top function")
-                return
-            if dest_addr == node_num:
-                packet_text = packet_text[header_size:] # get data from packet
-                if pkt_num_rec == pkt_number[2:]: # compare hex digits to the pkt_number
-                    # Write data to file
-                    print("Recieved Packet number: " + pkt_num_rec + " Writing to " + receivedfile + " now")
-                    w.write(packet_text)
+            if error != 1:
+                if routing_num != "3" and routing_num != "4":
+                    print("There has been a problem in sending, aborting to top function")
+                    return
+                if dest_addr == node_num:
+                    packet_text = packet_text[header_size:] # get data from packet
+                    if pkt_num_rec == pkt_number[2:]: # compare hex digits to the pkt_number
+                        # Write data to file
+                        print("Recieved Packet number: " + pkt_num_rec + " Writing to " + receivedfile + " now")
+                        w.write(packet_text)
             
-                    pkt_number = incPktNum(pkt_number)
-                    next_pkt_request = routing_num + source_addr + node_num + pkt_number[2:] # increment packet number
-                    print("next_pkt_req: " + next_pkt_request)
-                    next_pkt_request = bytes(next_pkt_request,"utf-8") #convert next_pkt_request to bytes
-                    print("Requesting Next Packet")
-                    #time.sleep(1); # removed this sleep to make it faster, still sends large files when commented
-                    rfm9x.send(next_pkt_request)
-                    if routing_num == "4":
-                        print("All packets received successfully, going back to main")
-                        return
-                else: # if the recieved packet number was not what RX was expecting
-                    rfm9x.send(bytes(next_pkt_request[2:],"utf-8")) # request the next packet from hex digits only
-                packet = None
-                packet = rfm9x.receive(timeout = 10)
+                        pkt_number = incPktNum(pkt_number)
+                        next_pkt_request = routing_num + source_addr + node_num + pkt_number[2:] # increment packet number
+                        print("next_pkt_req: " + next_pkt_request)
+                        next_pkt_request = bytes(next_pkt_request,"utf-8") #convert next_pkt_request to bytes
+                        print("Requesting Next Packet")
+                        #time.sleep(1); # removed this sleep to make it faster, still sends large files when commented
+                        rfm9x.send(next_pkt_request)
+                        if routing_num == "4":
+                            print("All packets received successfully, going back to main")
+                            return
+                    else: # if the recieved packet number was not what RX was expecting
+                        rfm9x.send(bytes(next_pkt_request[2:],"utf-8")) # request the next packet from hex digits onl
+            else:
+                rfm9x.send(bytes(next_pkt_request[2:],"utf-8"))
+            packet = None
+            packet = rfm9x.receive(timeout = 15)
 
 ######### Transmit Mode
 def sendFile(pkt_rec, source_addr): # TX Mode
@@ -228,6 +236,9 @@ while True:
             elif routing_num == "1":
                 print("Pi #" + source_addr + "is requesting file: "+ pkt_rec)
                 sendFile(pkt_rec, source_addr)
+            elif routing_num == "3":
+                print("Sleeping to break pi out of cycle")
+                time.sleep(18)
 
 
 while True: # End Idle Mode (optional if a break in the TX mode

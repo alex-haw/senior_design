@@ -937,3 +937,30 @@ Packet received,2021-02-25,15:08:26,0,24.64,-119
 Packet received,2021-02-25,15:08:31,0,24.64,-123
 Packet received,2021-02-25,15:08:36,0,24.64,-123
 Packet received,2021-02-25,15:08:41,0,24.64,-124
+#status,#date,#time,#distance (m),#temp (C),#RSSI (dBm)
+#status,#date,#time,#distance (m),#temp (C),#RSSI (dBm)
+Total minutes passed: 0,2021-04-21,16:37:59,0,52.616,0.0
+Total minutes passed: 1,2021-04-21,16:38:59,0,51.54,0.0
+#status,#date,#time,#distance (m),#temp (C),#RSSI (dBm)
+Total minutes passed: 0,2021-04-21,20:39:33,0,57.996,0.0
+#status,#date,#time,#distance (m),#temp (C),#RSSI (dBm)
+Total minutes passed: 0,2021-04-21,20:40:48,0,59.072,0.0
+Total minutes passed: 1,2021-04-21,20:40:49,0,59.072,0.0
+Total minutes passed: 2,2021-04-21,20:40:50,0,59.61,0.0
+Total minutes passed: 3,2021-04-21,20:40:51,0,59.072,0.0
+Total minutes passed: 4,2021-04-21,20:40:52,0,59.072,0.0
+Total minutes passed: 5,2021-04-21,20:40:53,0,59.072,0.0
+Total minutes passed: 6,2021-04-21,20:40:54,0,59.072,0.0
+Total minutes passed: 7,2021-04-21,20:40:55,0,59.072,0.0
+Total minutes passed: 8,2021-04-21,20:40:56,0,59.61,0.0
+#status,#date,#time,#distance (m),#temp (C),#RSSI (dBm)
+Total minutes passed: 0,2021-04-21,20:41:33,0,59.61,0.0
+#status,#date,#time,#minutes passed (minutes),#temp (C),#RSSI (dBm)
+Total minutes passed: 0,2021-04-21,20:42:49,0,59.61,0.0
+#status,#date,#time,#minutes passed (minutes),#temp (C),#RSSI (dBm)
+Total minutes passed: 0,2021-04-21,20:43:04,0,60.686,0.0
+Total minutes passed: 1,2021-04-21,20:44:04,1,59.072,0.0
+Total minutes passed: 2,2021-04-21,20:45:04,2,59.072,0.0
+Total minutes passed: 3,2021-04-21,20:46:04,3,59.072,0.0
+Total minutes passed: 4,2021-04-21,20:47:04,4,59.072,0.0
+Total minutes passed: 5,2021-04-21,20:48:05,5,59.072,0.0

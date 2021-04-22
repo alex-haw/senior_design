@@ -157,6 +157,7 @@ def sendFile(pkt_rec, source_addr): # TX Mode
         rfm9x.send(tx_data)
         #packet = True # Uncomment to skip the following loop.
         while tries < 3 and packet is None: # try sending 3 times
+            error = 0
             print("    Checking for ACK, pausing for 5 seconds")
             packet = rfm9x.receive(timeout = 5) # Wait for 5 seconds for receiever to request packet
             if packet is None: # If no packet received
@@ -164,20 +165,25 @@ def sendFile(pkt_rec, source_addr): # TX Mode
                 rfm9x.send(tx_data) # send packet again
                 tries += 1 # incement tries
             else: # IF a packet is received
-                packet_txt = str(packet,"utf-8") #convert packet to string, should have two characters
-                print("Ack Received")
-                dest_addr = packet_txt[1]
-                if dest_addr == node_num:
-                    if packet_txt[3:] != next_pkt_num[2:]: # if the received packet is equal to packet_num
-                        print("Error in received pkt, resending")
-                        print("Correct: " + str(packet_txt) + " Other: " + str(next_pkt_num))
-                        rfm9x.send(tx_data) # send packet gain
-                        tries += 1
-                        packet = None # empty packet to start try loop again
-                if dest_addr != node_num:
-                    print("Received packet intended for other pi, continuing")
-                    packet_txt = None
-            # go back to start of try sending 3 times unless the packet =/= pkt_num
+                try:
+                    packet_txt = str(packet,"utf-8") #convert packet to string, should have two characters
+                except UnicodeDecodeError:
+                    print("Decode error has occured")
+                    error = 1
+                if error != 1:
+                    print("Ack Received")
+                    dest_addr = packet_txt[1]
+                    if dest_addr == node_num:
+                        if packet_txt[3:] != next_pkt_num[2:]: # if the received packet is equal to packet_num
+                            print("Error in received pkt, resending")
+                            print("Correct: " + str(packet_txt) + " Other: " + str(next_pkt_num))
+                            rfm9x.send(tx_data) # send packet gain
+                            tries += 1
+                            packet = None # empty packet to start try loop again
+                    if dest_addr != node_num:
+                        print("Received packet intended for other pi, continuing")
+                        packet_txt = None
+                    # go back to start of try sending 3 times unless the packet =/= pkt_num
 
         if tries >= 3: # If no ACK is recieved from reciever after 3 attempts
             print("No acknowledge recieved, canceling send")

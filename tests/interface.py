@@ -114,9 +114,9 @@ def request(file_choice, source_addr): # RX Mode
                             print("All packets received successfully, going back to main")
                             return
                     else: # if the recieved packet number was not what RX was expecting
-                        rfm9x.send(bytes(next_pkt_request[2:],"utf-8")) # request the next packet from hex digits onl
+                        rfm9x.send(next_pkt_request[2:],"utf-8") # request the next packet from hex digits onl
             else:
-                rfm9x.send(bytes(next_pkt_request[2:],"utf-8"))
+                rfm9x.send(next_pkt_request[2:],"utf-8")
             packet = None
             packet = rfm9x.receive(timeout = 15)
 
@@ -238,7 +238,7 @@ while True:
                 sendFile(pkt_rec, source_addr)
             elif routing_num == "3":
                 print("Sleeping to break pi out of cycle")
-                time.sleep(18)
+                time.sleep(25)
 
 
 while True: # End Idle Mode (optional if a break in the TX mode

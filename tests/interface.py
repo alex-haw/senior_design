@@ -113,10 +113,6 @@ def request(file_choice, source_addr): # RX Mode
                         if routing_num == "4":
                             print("All packets received successfully, going back to main")
                             return
-                    else: # if the recieved packet number was not what RX was expecting
-                        rfm9x.send(next_pkt_request) # request the next packet from hex digits onl
-            else:
-                rfm9x.send(next_pkt_request)
             packet = None
             packet = rfm9x.receive(timeout = 15)
 
@@ -137,6 +133,7 @@ def sendFile(pkt_rec, source_addr): # TX Mode
 
     sent_size = 0 # Clear sent size before sending file
     pkt_num = "0x00" # start with packet 0 
+    next_pkt_num = incPktNum(pkt_num)
 
     while sent_size < file_size and file_too_big == False:
         print("Getting Chunk, beginning packet sending shortly ")
@@ -169,13 +166,11 @@ def sendFile(pkt_rec, source_addr): # TX Mode
                 print("Ack Received")
                 dest_addr = packet_txt[1]
                 if dest_addr == node_num:
-                    if packet_txt[3:] == pkt_num[2:]: # if the received packet is equal to packet_num
+                    if packet_txt[3:] != next_pkt_num[2:]: # if the received packet is equal to packet_num
                         print("Error in received pkt, resending")
                         rfm9x.send(tx_data) # send packet gain
                         tries += 1
                         packet = None # empty packet to start try loop again
-                    else: # If the packet is not equal to pkt_num, assume receiver wants next packet for now
-                        continue # do nothing
                 if dest_addr != node_num:
                     print("Received packet intended for other pi, continuing")
                     packet_txt = None
@@ -189,8 +184,7 @@ def sendFile(pkt_rec, source_addr): # TX Mode
         # Increment pkt_num with string format for next packet
         print("pkt_num is currently " + pkt_num[2:]) # print last charaters
         pkt_num = incPktNum(pkt_num) # takes string, adds one, converts pack to string
-        print("pkt_num is now " + pkt_num[2:] + "\n") # print last two characters (hex Digits) from pkt_num
-
+        print("pkt_num is now " + pkt_num[2:] + "\n") # print last two characters (hex Digits) from pkt_n
         # Increase sent size (assume packet was sent for now)
         sent_size = sent_size + chunk_size # print("sent_size is now: " + str(sent_size)) 
         # Go back to     while sent_size < file_size:

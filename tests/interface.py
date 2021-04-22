@@ -168,6 +168,7 @@ def sendFile(pkt_rec, source_addr): # TX Mode
                 if dest_addr == node_num:
                     if packet_txt[3:] != next_pkt_num[2:]: # if the received packet is equal to packet_num
                         print("Error in received pkt, resending")
+                        print("Correct: " + str(packet_txt) + " Other: " + str(next_pkt_num))
                         rfm9x.send(tx_data) # send packet gain
                         tries += 1
                         packet = None # empty packet to start try loop again
@@ -185,6 +186,7 @@ def sendFile(pkt_rec, source_addr): # TX Mode
         print("pkt_num is currently " + pkt_num[2:]) # print last charaters
         pkt_num = incPktNum(pkt_num) # takes string, adds one, converts pack to string
         print("pkt_num is now " + pkt_num[2:] + "\n") # print last two characters (hex Digits) from pkt_n
+        next_pkt_num = incPktNum(pkt_num)
         # Increase sent size (assume packet was sent for now)
         sent_size = sent_size + chunk_size # print("sent_size is now: " + str(sent_size)) 
         # Go back to     while sent_size < file_size:

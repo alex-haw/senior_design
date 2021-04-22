@@ -113,7 +113,7 @@ def request(file_choice, source_addr): # RX Mode
                         if routing_num == "4":
                             print("All packets received successfully, going back to main")
                             return
-                    elif pkt_num_rec == prev_pkt_num:
+                    elif pkt_num_rec == prev_pkt_num[2:]:
                         rfm9x.send(next_pkt_request)
             packet = None
             packet = rfm9x.receive(timeout = 15)

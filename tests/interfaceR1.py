@@ -27,9 +27,9 @@ rfm9x.tx_power = 23
 #rfm9x.spreading_factor = 12 # default is 7, higher values increase the ability to distingish signal from noise
                              # lower values increase data transmission rate
 # Long Range Test 1:
- rmf9x.signal_bandwdith = 125000
- rfm9x.coding_rate = 5
- rfm9x.spreading_factor = 12
+rfm9x.signal_bandwdith = 125000
+rfm9x.coding_rate = 5
+rfm9x.spreading_factor = 12
 
 # Long Range Test 2:
 # rfm9x.signal_bandwdith = 62500

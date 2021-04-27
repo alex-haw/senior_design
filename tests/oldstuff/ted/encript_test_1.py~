@@ -1,0 +1,2 @@
+from pgp import read_message
+message = read_message('hi')
